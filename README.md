@@ -1,14 +1,6 @@
-# Turborepo starter
+# Platform Monorepo
 
-This Turborepo starter is maintained by the Turborepo core team.
-
-## Using this example
-
-Run the following command:
-
-```sh
-npx create-turbo@latest
-```
+A Turborepo monorepo with multiple frontend applications.
 
 ## What's inside?
 
@@ -16,10 +8,8 @@ This Turborepo includes the following packages/apps:
 
 ### Apps and Packages
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
+- `client`: a [Svelte](https://svelte.dev/) app with TypeScript
+- `admin`: a [React](https://react.dev/) app with TypeScript
 - `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
@@ -145,6 +135,57 @@ Without global `turbo`:
 npx turbo link
 yarn exec turbo link
 pnpm exec turbo link
+```
+
+## Deployment to Cloudflare Pages
+
+This repository includes a GitHub Actions workflow that automatically deploys both apps to Cloudflare Pages.
+
+### Setup Instructions
+
+1. **Get your Cloudflare credentials:**
+   - Go to [Cloudflare Dashboard](https://dash.cloudflare.com/)
+   - Navigate to "Workers & Pages" > "Overview"
+   - Note your Account ID (found in the URL or sidebar)
+   - Create an API Token:
+     - Go to "My Profile" > "API Tokens"
+     - Click "Create Token"
+     - Use the "Edit Cloudflare Workers" template or create a custom token with "Cloudflare Pages:Edit" permissions
+     - Copy the token
+
+2. **Add secrets to your GitHub repository:**
+   - Go to your GitHub repository
+   - Navigate to Settings > Secrets and variables > Actions
+   - Click "New repository secret" and add:
+     - `CLOUDFLARE_API_TOKEN`: Your Cloudflare API token
+     - `CLOUDFLARE_ACCOUNT_ID`: Your Cloudflare account ID
+
+3. **Create Cloudflare Pages projects:**
+   - The workflow expects two projects named `client` and `admin`
+   - These will be created automatically on first deployment, or you can create them manually in the Cloudflare dashboard
+
+4. **Deploy:**
+   - Push to the `main` branch to trigger automatic deployment
+   - Both apps will be deployed in parallel
+
+### Manual Deployment
+
+You can also deploy manually using the Cloudflare CLI (Wrangler):
+
+```sh
+# Install Wrangler
+npm install -g wrangler
+
+# Login to Cloudflare
+wrangler login
+
+# Deploy client app
+npm run build --workspace=client
+wrangler pages deploy apps/client/dist --project-name=client
+
+# Deploy admin app
+npm run build --workspace=admin
+wrangler pages deploy apps/admin/dist --project-name=admin
 ```
 
 ## Useful Links
