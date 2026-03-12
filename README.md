@@ -145,48 +145,67 @@ This repository includes a GitHub Actions workflow that automatically deploys bo
 
 1. **Get your Cloudflare credentials:**
    - Go to [Cloudflare Dashboard](https://dash.cloudflare.com/)
-   - Navigate to "Workers & Pages" > "Overview"
-   - Note your Account ID (found in the URL or sidebar)
+   - Click on "Workers & Pages" in the left sidebar
+   - Your Account ID is displayed in the right sidebar
    - Create an API Token:
-     - Go to "My Profile" > "API Tokens"
+     - Go to "My Profile" > "API Tokens" (or click your profile icon > API Tokens)
      - Click "Create Token"
-     - Use the "Edit Cloudflare Workers" template or create a custom token with "Cloudflare Pages:Edit" permissions
-     - Copy the token
+     - Use the "Edit Cloudflare Workers" template
+     - Or create a custom token with these permissions:
+       - Account > Cloudflare Pages > Edit
+     - Click "Continue to summary" > "Create Token"
+     - Copy the token (you won't see it again!)
 
 2. **Add secrets to your GitHub repository:**
    - Go to your GitHub repository
    - Navigate to Settings > Secrets and variables > Actions
    - Click "New repository secret" and add:
-     - `CLOUDFLARE_API_TOKEN`: Your Cloudflare API token
-     - `CLOUDFLARE_ACCOUNT_ID`: Your Cloudflare account ID
+     - Name: `CLOUDFLARE_API_TOKEN`, Value: Your API token from step 1
+     - Name: `CLOUDFLARE_ACCOUNT_ID`, Value: Your Account ID from step 1
 
-3. **Create Cloudflare Pages projects:**
-   - The workflow expects two projects named `client` and `admin`
-   - These will be created automatically on first deployment, or you can create them manually in the Cloudflare dashboard
+3. **First deployment (creates projects automatically):**
+   - The workflow will automatically create two Cloudflare Pages projects:
+     - `platform-client` for the Svelte app
+     - `platform-admin` for the React app
+   - Simply push to the `main` branch to trigger the deployment
+   - The projects will be created on the first run
 
-4. **Deploy:**
-   - Push to the `main` branch to trigger automatic deployment
-   - Both apps will be deployed in parallel
+4. **Access your deployed apps:**
+   - After deployment, find your apps at:
+     - Client: `https://platform-client.pages.dev`
+     - Admin: `https://platform-admin.pages.dev`
+   - You can configure custom domains in the Cloudflare dashboard
 
 ### Manual Deployment
 
-You can also deploy manually using the Cloudflare CLI (Wrangler):
+You can also deploy manually using Wrangler CLI:
 
 ```sh
-# Install Wrangler
+# Install Wrangler globally
 npm install -g wrangler
 
-# Login to Cloudflare
+# Login to Cloudflare (opens browser for authentication)
 wrangler login
 
-# Deploy client app
+# Build and deploy client app
 npm run build --workspace=client
-wrangler pages deploy apps/client/dist --project-name=client
+wrangler pages deploy apps/client/dist --project-name=platform-client
 
-# Deploy admin app
+# Build and deploy admin app
 npm run build --workspace=admin
-wrangler pages deploy apps/admin/dist --project-name=admin
+wrangler pages deploy apps/admin/dist --project-name=platform-admin
 ```
+
+### Troubleshooting
+
+**"Project not found" error:**
+- The first deployment automatically creates the projects
+- If you see this error, ensure your `CLOUDFLARE_API_TOKEN` has the correct permissions
+- You can also manually create projects in the Cloudflare dashboard before deploying
+
+**API Token permissions:**
+- Make sure your token has "Account > Cloudflare Pages > Edit" permission
+- The token should not have an IP restriction if deploying from GitHub Actions
 
 ## Useful Links
 
