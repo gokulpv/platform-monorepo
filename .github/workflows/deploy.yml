@@ -16,8 +16,8 @@ jobs:
       - name: setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: install dependencies
         run: npm ci
@@ -39,7 +39,7 @@ jobs:
           npx wrangler deploy --minify
 
   deploy-client:
-    name: deploy Client (Svelte)
+    name: deploy client (Svelte)
     needs: deploy-worker
     runs-on: ubuntu-latest
     steps:
@@ -49,13 +49,13 @@ jobs:
       - name: setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: install dependencies
         run: npm ci
 
-      - name: build Client
+      - name: build client
         run: npm run build --workspace=client
 
       - name: deploy to Cloudflare Pages
@@ -68,7 +68,7 @@ jobs:
             --branch=test
 
   deploy-admin:
-    name: deploy Admin (React)
+    name: deploy admin (React)
     needs: deploy-worker
     runs-on: ubuntu-latest
     steps:
@@ -78,13 +78,13 @@ jobs:
       - name: setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: install dependencies
         run: npm ci
 
-      - name: build Admin
+      - name: build admin
         run: npm run build --workspace=admin
 
       - name: deploy to Cloudflare Pages
