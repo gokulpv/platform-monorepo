@@ -25,7 +25,7 @@
     {
       "binding": "DB",
       "database_name": "tenant-db",
-      "database_id": "REPLACE_WITH_YOUR_D1_ID"
+      "database_id": "d5349f3d-95f1-436a-967f-d47ebf39fa21"
     }
   ]
   // "ai": {
