@@ -1,21 +1,16 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   let { data } = $props();
 
-  let mounted = $state(false);
-  onMount(() => {
-    // Trigger animations as soon as hydration is complete
-    mounted = true;
-  });
-
   const brand = $derived(data || {});
-  const primaryColor = $derived(brand.primary_color || "#4A0404"); // Default to Koi Maroon
-  const secondaryColor = $derived(brand.secondary_color || "#FFB800"); // Default to Koi Gold
+  const tenantName = $derived(brand.tenant_name || "Platform");
+  const primaryColor = $derived(brand.primary_color || "#111111"); 
+  const secondaryColor = $derived(brand.secondary_color || "#333333");
   const logoUrl = $derived(brand.logo_url || "");
-  const location = $derived(brand.location || "Mathikere, Bengaluru");
+  const location = $derived(brand.location || "Location not set");
 </script>
 
 <svelte:head>
+  <title>{tenantName} | Home</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link
     rel="preconnect"
@@ -27,29 +22,29 @@
 <main
   class="splash"
   style="--bg: {primaryColor}; --accent: {secondaryColor}; --font: {brand.font_family ||
-    'system-ui'}"
+    'Outfit'}"
 >
-  <div class="content" class:visible={mounted}>
-    <div class="logo-container stagger-1">
+  <div class="content">
+    <div class="logo-container">
       {#if logoUrl}
         <img src={logoUrl} alt="Logo" class="logo" />
       {:else}
-        <div class="logo-placeholder">KOI</div>
+        <div class="logo-placeholder">{tenantName.substring(0, 1).toUpperCase()}</div>
       {/if}
     </div>
 
-    <div class="text-group stagger-2">
-      <h1 class="title">Koi Resto Bar</h1>
+    <div class="text-group">
+      <h1 class="title">{tenantName}</h1>
       <p class="location">{location}</p>
     </div>
 
-    <button class="cta stagger-3">
-      <span class="icon">🍴</span>
-      Explore our menu
+    <button class="cta">
+      <span class="icon">✨</span>
+      Explore
     </button>
   </div>
 
-  <footer class="footer stagger-4" class:visible={mounted}>
+  <footer class="footer">
     <p>Powered by <strong>Tap QR</strong></p>
   </footer>
 </main>
@@ -59,6 +54,7 @@
     margin: 0;
     padding: 0;
     overflow: hidden;
+    background-color: var(--bg);
   }
 
   .splash {
@@ -84,41 +80,6 @@
     gap: 2.5rem;
     text-align: center;
     padding: 2rem;
-  }
-
-  /* Entrance state - hidden until .visible is applied on mount */
-  .stagger-1,
-  .stagger-2,
-  .stagger-3,
-  .stagger-4 {
-    opacity: 0;
-    transform: translateY(15px);
-    transition:
-      opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  /* Snappier visibility triggers on mount */
-  .visible .stagger-1 {
-    opacity: 1;
-    transform: translateY(0);
-    transition-delay: 0s;
-  }
-  .visible .stagger-2 {
-    opacity: 1;
-    transform: translateY(0);
-    transition-delay: 0.1s;
-  }
-  .visible .stagger-3 {
-    opacity: 1;
-    transform: translateY(0);
-    transition-delay: 0.2s;
-  }
-  .visible.footer,
-  .visible.stagger-4 {
-    opacity: 0.6;
-    transform: translateY(0);
-    transition-delay: 0.35s;
   }
 
   .logo-container {
@@ -175,15 +136,6 @@
     gap: 0.75rem;
     cursor: pointer;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-    transition:
-      transform 0.2s ease,
-      box-shadow 0.2s ease,
-      opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .cta:active {
-    transform: scale(0.95);
   }
 
   .icon {
@@ -194,5 +146,6 @@
     position: absolute;
     bottom: 2rem;
     font-size: 0.8rem;
+    opacity: 0.6;
   }
 </style>
