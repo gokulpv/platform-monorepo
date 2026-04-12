@@ -1,12 +1,13 @@
-import type { PageServerLoad } from './$types';
+import { apiFetch } from "$lib/server/api-fetch";
+import type { PageServerLoad } from "./$types";
 
-export const load: PageServerLoad = async ({ fetch }) => {
-	try {
-		const response = await fetch(`http://localhost:8787/api/brand-settings`);
-		const brand = await response.json();
-		return brand;
-	} catch (error) {
-		console.error('Failed to fetch branding:', error);
-		return { brand: null };
-	}
+export const load: PageServerLoad = async (event) => {
+  try {
+    const response = await apiFetch(event, "brand-settings");
+    const brand = await response.json();
+    return brand;
+  } catch (error) {
+    console.error("Failed to fetch branding:", error);
+    return { brand: null };
+  }
 };

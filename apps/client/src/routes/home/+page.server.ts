@@ -1,24 +1,25 @@
+import { apiFetch } from '$lib/server/api-fetch';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ fetch }) => {
+export const load: PageServerLoad = async (event) => {
 	try {
-        const [spotlightsRes, brandRes] = await Promise.all([
-            fetch('http://localhost:8787/api/daily-spotlights'),
-            fetch('http://localhost:8787/api/brand-settings')
-        ]);
+		const [spotlightsRes, brandRes] = await Promise.all([
+			apiFetch(event, 'daily-spotlights'),
+			apiFetch(event, 'brand-settings')
+		]);
 
-        const spotlights = await spotlightsRes.json();
-        const brand = await brandRes.json();
+		const spotlights = await spotlightsRes.json();
+		const brand = await brandRes.json();
 
 		return {
-            spotlights,
-            brand
-        };
+			spotlights,
+			brand
+		};
 	} catch (error) {
 		console.error('Failed to fetch home data:', error);
-		return { 
-            spotlights: [],
-            brand: null
-        };
+		return {
+			spotlights: [],
+			brand: null
+		};
 	}
 };
