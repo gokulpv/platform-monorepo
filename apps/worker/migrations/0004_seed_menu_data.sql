@@ -27,12 +27,12 @@ INSERT INTO menu_items (id, tenant_id, name, description, category_id, main_cate
 VALUES (6, 't_koi', 'Wasabi Martini', 'Artisan cocktail with gin, fresh lime, and a subtle kick of wasabi.', 5, 5, 15.00, 1, 5, 210, 4.4, 50);
 
 -- 3. Menu Item Images
-INSERT INTO menu_item_images (tenant_id, menu_item_id, image_url, sort_order) VALUES ('t_koi', 1, '/assets/menu/dragon_fire_roll.webp', 0);
-INSERT INTO menu_item_images (tenant_id, menu_item_id, image_url, sort_order) VALUES ('t_koi', 2, '/assets/menu/truffle_edamame.webp', 0);
-INSERT INTO menu_item_images (tenant_id, menu_item_id, image_url, sort_order) VALUES ('t_koi', 3, '/assets/menu/miso_black_cod.webp', 0);
-INSERT INTO menu_item_images (tenant_id, menu_item_id, image_url, sort_order) VALUES ('t_koi', 4, '/assets/menu/kung_pao_chicken.webp', 0);
-INSERT INTO menu_item_images (tenant_id, menu_item_id, image_url, sort_order) VALUES ('t_koi', 5, '/assets/menu/matcha_lava_cake.webp', 0);
-INSERT INTO menu_item_images (tenant_id, menu_item_id, image_url, sort_order) VALUES ('t_koi', 6, '/assets/menu/wasabi_martini.webp', 0);
+INSERT INTO menu_item_images (tenant_id, menu_item_id, image_url, sort_order) VALUES ('t_koi', 1, 'menu/dragon_fire_roll.webp', 0);
+INSERT INTO menu_item_images (tenant_id, menu_item_id, image_url, sort_order) VALUES ('t_koi', 2, 'menu/truffle_edamame.webp', 0);
+INSERT INTO menu_item_images (tenant_id, menu_item_id, image_url, sort_order) VALUES ('t_koi', 3, 'menu/miso_black_cod.webp', 0);
+INSERT INTO menu_item_images (tenant_id, menu_item_id, image_url, sort_order) VALUES ('t_koi', 4, 'menu/kung_pao_chicken.webp', 0);
+INSERT INTO menu_item_images (tenant_id, menu_item_id, image_url, sort_order) VALUES ('t_koi', 5, 'menu/matcha_lava_cake.webp', 0);
+INSERT INTO menu_item_images (tenant_id, menu_item_id, image_url, sort_order) VALUES ('t_koi', 6, 'menu/wasabi_martini.webp', 0);
 
 -- 4. Ingredients
 INSERT INTO ingredients (id, tenant_id, name) VALUES (1, 't_koi', 'Tuna');

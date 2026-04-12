@@ -1,16 +1,6 @@
-import type { PageServerLoad, EntryGenerator } from './$types';
+import type { PageServerLoad } from './$types';
 
-export const prerender = true;
-
-export const entries: EntryGenerator = async () => {
-	return [
-		{ subdomain: 'nike' },
-		{ subdomain: 'spotify' },
-		{ subdomain: 'google' }
-	];
-};
-
-export const load: PageServerLoad = async ({ fetch, params }) => {
+export const load: PageServerLoad = async ({ fetch }) => {
 	try {
 		const response = await fetch(`http://localhost:8787/api/brand-settings`);
 		const brand = await response.json();

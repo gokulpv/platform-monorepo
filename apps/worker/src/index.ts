@@ -34,10 +34,12 @@ app.use('/api/*', async (c, next) => {
   // 1. Check ultra-fast memory cache
   let tenantId = tenantCache.get(subdomain)
 
-  // 2. If missed, query D1 and save to cache
+  // 2. If missed, query D1 and save to cache (header value may be subdomain or tenant id)
   if (!tenantId) {
-    const tenant = await c.env.DB.prepare('SELECT id FROM tenant WHERE subdomain = ?')
-      .bind(subdomain)
+    const tenant = await c.env.DB.prepare(
+      'SELECT id FROM tenant WHERE subdomain = ? OR id = ?'
+    )
+      .bind(subdomain, subdomain)
       .first<{ id: string }>()
 
     if (!tenant) {
@@ -56,9 +58,30 @@ app.use('/api/*', async (c, next) => {
 const routes = app
   .get('/api/brand-settings', async (c) => {
     const tenantId = c.get('tenantId')
-    console.log('tenantId', tenantId)
-    const brand = await c.env.DB.prepare('SELECT * FROM brand_settings WHERE tenant_id = ?').bind(tenantId).first()
+    const brand = await c.env.DB.prepare(`
+      SELECT bs.*, t.name as tenant_name 
+      FROM brand_settings bs
+      JOIN tenant t ON bs.tenant_id = t.id
+      WHERE bs.tenant_id = ?
+    `).bind(tenantId).first()
     return c.json(brand)
+  })
+  .get('/api/daily-spotlights', async (c) => {
+    const tenantId = c.get('tenantId')
+    const spotlights = await c.env.DB.prepare(`
+      SELECT 
+        ds.title, 
+        ds.subtitle, 
+        mi.description, 
+        mii.image_url 
+      FROM daily_spotlights ds
+      JOIN menu_items mi ON ds.menu_item_id = mi.id
+      JOIN menu_item_images mii ON mi.id = mii.menu_item_id
+      WHERE ds.tenant_id = ? AND ds.is_active = 1
+      ORDER BY ds.priority DESC
+    `).bind(tenantId).all()
+    
+    return c.json(spotlights.results)
   })
 
 export type AppType = typeof routes

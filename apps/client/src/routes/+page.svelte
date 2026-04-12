@@ -1,11 +1,13 @@
 <script lang="ts">
+  import { resolveImagePath } from "$lib/utils/image";
+
   let { data } = $props();
 
   const brand = $derived(data || {});
   const tenantName = $derived(brand.tenant_name || "Platform");
   const primaryColor = $derived(brand.primary_color || "#111111"); 
   const secondaryColor = $derived(brand.secondary_color || "#333333");
-  const logoUrl = $derived(brand.logo_url || "");
+  const logoUrl = $derived(resolveImagePath(brand.logo_url));
   const location = $derived(brand.location || "Location not set");
 </script>
 
@@ -38,10 +40,10 @@
       <p class="location">{location}</p>
     </div>
 
-    <button class="cta">
+    <a href="/home" class="cta">
       <span class="icon">✨</span>
       Explore
-    </button>
+    </a>
   </div>
 
   <footer class="footer">
@@ -126,6 +128,7 @@
   .cta {
     background: white;
     color: black;
+    text-decoration: none;
     border: none;
     padding: 1rem 2.5rem;
     border-radius: 100px;
