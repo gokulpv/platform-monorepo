@@ -39,13 +39,32 @@ jobs:
       - name: build client (for assets)
         run: npm run build --workspace=client
 
-      # ✅ Upload ALL assets (including folders) to R2
-      - name: sync assets to R2
+      # ✅ Upload static assets to R2 (Wrangler has no `r2 sync`; use object put per file)
+      - name: upload assets to R2
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          wrangler r2 sync ./apps/client/static/assets r2://platform-assets
+          set -euo pipefail
+          ASSETS_ROOT="apps/client/static/assets"
+          BUCKET="platform-assets"
+          mime_for() {
+            case "${1##*.}" in
+              webp) echo "image/webp" ;;
+              jpg|jpeg) echo "image/jpeg" ;;
+              png) echo "image/png" ;;
+              gif) echo "image/gif" ;;
+              svg) echo "image/svg+xml" ;;
+              ico) echo "image/x-icon" ;;
+              woff2) echo "font/woff2" ;;
+              woff) echo "font/woff" ;;
+              *) echo "application/octet-stream" ;;
+            esac
+          }
+          while IFS= read -r -d '' f; do
+            key="${f#"$ASSETS_ROOT"/}"
+            wrangler r2 object put "${BUCKET}/${key}" --file="$f" --remote --content-type "$(mime_for "$f")"
+          done < <(find "$ASSETS_ROOT" -type f -print0)
 
       # ✅ Deploy worker
       - name: deploy Worker
