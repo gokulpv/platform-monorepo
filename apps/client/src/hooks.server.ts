@@ -22,10 +22,7 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }) => {
   // Forward tenant to worker (subdomain or tenant id — worker resolves both)
   if (request.url.includes("localhost:8787")) {
     const fallback = env.TENANT_FALLBACK?.trim();
-    request.headers.set(
-      "x-tenant-subdomain",
-      event.locals.subdomain || fallback,
-    );
+    request.headers.set("x-tenant-subdomain", "t_koi");
   }
 
   return fetch(request);
