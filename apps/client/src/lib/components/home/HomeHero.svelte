@@ -81,14 +81,21 @@
     <div class="brand-logo">
       <div class="logo-inner">KOI</div>
     </div>
-    <div class="veg-toggle" class:active={isVeg} onclick={() => isVeg = !isVeg}>
+    <button
+      type="button"
+      class="veg-toggle"
+      class:active={isVeg}
+      aria-pressed={isVeg}
+      aria-label="Toggle vegetarian filter"
+      onclick={() => (isVeg = !isVeg)}
+    >
       <div class="toggle-dot" class:veg={isVeg}></div>
       <span>Veg</span>
-    </div>
+    </button>
   </div>
 
-  <button class="arrow-cta">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+  <button type="button" class="arrow-cta" aria-label="Scroll to content">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
       <path d="M7 17L17 7M17 7H7M17 7V17"/>
     </svg>
   </button>
@@ -158,6 +165,8 @@
     color: #2e7d32;
     padding: 4px 12px 4px 6px;
     border-radius: 100px;
+    border: none;
+    font: inherit;
     display: flex;
     align-items: center;
     gap: 8px;

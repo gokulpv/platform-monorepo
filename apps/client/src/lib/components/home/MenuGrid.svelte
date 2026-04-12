@@ -15,8 +15,8 @@
   <div class="header">
     <h2 class="section-title">All Items</h2>
     <div class="view-options">
-      <button class="filter">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16m-7 6h7"/></svg>
+      <button type="button" class="filter" aria-label="Filter menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16m-7 6h7"/></svg>
       </button>
     </div>
   </div>
