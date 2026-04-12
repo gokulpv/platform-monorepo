@@ -1,11 +1,14 @@
-import { apiFetch } from '$lib/server/api-fetch';
+import { env } from '$env/dynamic/private';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
+	const base = env.WORKER_BASE_PATH?.trim().replace(/\/$/, '');
+	if (!base) throw new Error('WORKER_BASE_PATH is not set');
+
 	try {
 		const [spotlightsRes, brandRes] = await Promise.all([
-			apiFetch(event, 'daily-spotlights'),
-			apiFetch(event, 'brand-settings')
+			event.fetch(`${base}/api/daily-spotlights`),
+			event.fetch(`${base}/api/brand-settings`)
 		]);
 
 		const spotlights = await spotlightsRes.json();

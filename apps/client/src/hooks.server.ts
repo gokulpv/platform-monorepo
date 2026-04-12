@@ -1,13 +1,8 @@
+import { env } from '$env/dynamic/private';
 import type { Handle, HandleFetch } from '@sveltejs/kit';
-import {
-	getDefaultTenantFallback,
-	isWorkerRequest,
-	resolveTenantForApi
-} from '$lib/server/api-fetch';
 
 function subdomainFromHost(hostname: string): string | null {
 	const parts = hostname.split('.');
-	// e.g. 'apple.localhost' -> 'apple'; plain 'localhost' / single-label host -> none
 	if (parts.length > 1 && parts[0] !== 'localhost') {
 		return parts[0];
 	}
@@ -16,17 +11,19 @@ function subdomainFromHost(hostname: string): string | null {
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const fromHost = subdomainFromHost(event.url.hostname);
-	event.locals.subdomain = fromHost ?? getDefaultTenantFallback();
+	event.locals.subdomain = fromHost ?? (env.TENANT_FALLBACK?.trim() || 't_koi');
 
 	return resolve(event);
 };
 
 export const handleFetch: HandleFetch = async ({ event, request, fetch }) => {
-	if (!isWorkerRequest(request.url)) {
+	const base = env.WORKER_BASE_PATH?.trim().replace(/\/$/, '');
+	if (!base || (request.url !== base && !request.url.startsWith(`${base}/`))) {
 		return fetch(request);
 	}
 
 	const headers = new Headers(request.headers);
-	headers.set('x-tenant-subdomain', resolveTenantForApi(event.locals));
+	const tenant = event.locals.subdomain?.trim() || (env.TENANT_FALLBACK?.trim() || 't_koi');
+	headers.set('x-tenant-subdomain', tenant);
 	return fetch(new Request(request, { headers }));
 };
