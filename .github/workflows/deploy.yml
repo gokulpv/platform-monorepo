@@ -8,7 +8,7 @@ on:
 # Client build + SSR: override via Actions Variables if needed; otherwise production R2 public URL below.
 env:
   PUBLIC_IMAGE_BASE_URL: ${{ vars.PUBLIC_IMAGE_BASE_URL || 'https://pub-242354276e8d4346a4b0ef9928457f19.r2.dev/' }}
-  TENANT_FALLBACK: ${{ vars.TENANT_FALLBACK }}
+  TENANT_FALLBACK: ${{ vars.TENANT_FALLBACK || 't_koi' }}
 
 jobs:
   deploy-worker:
