@@ -1,3 +1,4 @@
+import { WORKER_BASE_PATH } from "$env/static/private";
 import { env } from "$env/dynamic/private";
 import type { Handle, HandleFetch } from "@sveltejs/kit";
 
@@ -17,7 +18,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 };
 
 export const handleFetch: HandleFetch = async ({ event, request, fetch }) => {
-  const base = env.WORKER_BASE_PATH?.trim().replace(/\/$/, "");
+  const base = WORKER_BASE_PATH?.trim().replace(/\/$/, "");
   if (!base || (request.url !== base && !request.url.startsWith(`${base}/`))) {
     return fetch(request);
   }

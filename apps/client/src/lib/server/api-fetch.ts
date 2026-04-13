@@ -1,8 +1,8 @@
-import { env } from "$env/dynamic/private";
+import { WORKER_BASE_PATH } from "$env/static/private";
 import type { RequestEvent } from "@sveltejs/kit";
 
 function requireWorkerBase(): string {
-  const base = env.WORKER_BASE_PATH?.trim().replace(/\/$/, "");
+  const base = WORKER_BASE_PATH?.trim().replace(/\/$/, "");
   if (!base) {
     throw new Error(
       "WORKER_BASE_PATH is not set; add it to .env, Cloudflare Pages, or your CI environment.",
