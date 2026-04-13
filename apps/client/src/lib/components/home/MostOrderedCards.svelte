@@ -1,28 +1,16 @@
 <script lang="ts">
   import { resolveImagePath } from "$lib/utils/image";
+  import { goto } from "$app/navigation";
 
   let {
-    items = [
-      {
-        name: "Classic Wagyu Burger",
-        price: "$18",
-        image: "/assets/menu/most_ordered_dish.png",
-        rating: "4.9",
-      },
-      {
-        name: "Spicy Miso Ramen",
-        price: "$15",
-        image: "/assets/menu/most_ordered_dish.png",
-        rating: "4.8",
-      },
-      {
-        name: "Avocado Toast",
-        price: "$12",
-        image: "/assets/menu/most_ordered_dish.png",
-        rating: "4.7",
-      },
-    ],
+    items = [],
   } = $props();
+
+  function navigateToDetail(id: string) {
+    if (id) {
+      goto(`/dish/${id}`);
+    }
+  }
 </script>
 
 <div class="most-ordered">
@@ -30,9 +18,10 @@
   <div class="scroll-container">
     <div class="cards">
       {#each items as item}
-        <div
+        <button
           class="card"
           style="background-image: url({resolveImagePath(item.image)})"
+          onclick={() => navigateToDetail(item.id)}
         >
           <div class="overlay"></div>
           <div class="info">
@@ -40,7 +29,7 @@
             <h3 class="name">{item.name}</h3>
             <p class="price">{item.price}</p>
           </div>
-        </div>
+        </button>
       {/each}
     </div>
   </div>
@@ -76,6 +65,13 @@
     justify-content: flex-end;
     color: white;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transition: all 0.25s cubic-bezier(0.33, 1, 0.68, 1);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .card:active {
+    transform: scale(0.96);
+    opacity: 0.9;
   }
 
   .card:first-child { margin-left: 1.5rem; }

@@ -1,22 +1,14 @@
 <script lang="ts">
   import { page } from "$app/state";
+  import { mockDishes } from "$lib/data/mock-menu";
   import AppHero from "$lib/components/shared/AppHero.svelte";
   import PageLayout from "$lib/layouts/PageLayout.svelte";
   import CategoryTabScroll from "$lib/components/categories/CategoryTabScroll.svelte";
   import MenuGrid from "$lib/components/home/MenuGrid.svelte";
   import { resolveImagePath } from "$lib/utils/image";
-
-  // Mock data for all items to demonstrate filtering
-  const allItems = [
-    { name: "Tandoori Broccoli", price: "₹675", image: "/assets/menu/most_ordered_dish.png", time: "20-25 mins", category: "Starters", type: "Veg" },
-    { name: "Tandoori Chooza", price: "₹675", image: "/assets/menu/most_ordered_dish.png", time: "20-25 mins", category: "Starters", type: "Non-Veg" },
-    { name: "BBQ Ribs", price: "₹850", image: "/assets/menu/most_ordered_dish.png", time: "25-30 mins", category: "Main", type: "Non-Veg" },
-    { name: "Paneer Tikka", price: "₹550", image: "/assets/menu/most_ordered_dish.png", time: "15-20 mins", category: "Starters", type: "Veg" },
-    { name: "Chocolate Brownie", price: "₹350", image: "/assets/menu/most_ordered_dish.png", time: "10 mins", category: "Desserts", type: "Veg" },
-    { name: "Margarita", price: "₹450", image: "/assets/menu/most_ordered_dish.png", time: "5 mins", category: "Alcohol", type: "Non-Veg" },
-    { name: "Fresh Lime Soda", price: "₹150", image: "/assets/menu/most_ordered_dish.png", time: "5 mins", category: "Drinks", type: "Veg" },
-    { name: "Hakka Noodles", price: "₹450", image: "/assets/menu/most_ordered_dish.png", time: "15 mins", category: "Main", type: "Veg" },
-  ];
+  
+  // Use shared mock data
+  const allItems = mockDishes;
 
   // Detailed info for each category hero
   const categoryMeta = {
@@ -64,6 +56,15 @@
 </svelte:head>
 
 <PageLayout heroHeight="50svh">
+  {#snippet nav()}
+    <AppHero 
+      mode="static"
+      showBack={true}
+      backPath="/home"
+      topBarOnly={true}
+    />
+  {/snippet}
+
   {#snippet hero()}
     <AppHero 
       mode="static"
@@ -71,8 +72,6 @@
       subtitle={activeMeta.desc}
       iconPath={activeMeta.iconPath}
       bgImage={activeMeta.bg}
-      showBack={true}
-      backPath="/home"
     />
   {/snippet}
 
@@ -81,31 +80,6 @@
       bind:activeCategory={selectedCategory} 
       onSelect={handleCategoryChange} 
     />
-
-    <div class="filter-bar">
-      <div class="dropdown-group">
-        <button class="filter-chip">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="4" x2="14" y1="21" y2="21"/><line x1="4" x2="10" y1="14" y2="14"/><line x1="4" x2="18" y1="7" y2="7"/><path d="M14 21v-4a2 2 0 012-2h2a2 2 0 012 2v4"/><path d="M10 14v-4a2 2 0 012-2h2a2 2 0 012 2v4"/><path d="M18 7V3a2 2 0 00-2-2h-2a2 2 0 00-2 2v4"/>
-          </svg>
-          Filters
-          <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
-        </button>
-        <button class="filter-chip">
-          All Cuisine
-          <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
-        </button>
-      </div>
-      
-      <div class="view-toggles">
-        <button class="view-btn active" aria-label="List view">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-        </button>
-        <button class="view-btn" aria-label="Grid view">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        </button>
-      </div>
-    </div>
   </div>
 
   <div class="grid-container">
@@ -120,62 +94,6 @@
     background: white;
     z-index: 10;
     border-radius: 32px 32px 0 0;
-  }
-
-  .filter-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem 1.5rem;
-    border-bottom: 1px solid #f2f2f2;
-  }
-
-  .dropdown-group {
-    display: flex;
-    gap: 0.75rem;
-  }
-
-  .filter-chip {
-    padding: 0.75rem 1.25rem;
-    border: 1px solid #eaeaea;
-    border-radius: 100px;
-    background: white;
-    font-size: 0.85rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    color: #111;
-    cursor: pointer;
-  }
-
-  .chevron { opacity: 0.5; margin-top: 1px; }
-
-  .view-toggles {
-    display: flex;
-    gap: 0.5rem;
-    background: #f2f2f2;
-    padding: 0.35rem;
-    border-radius: 14px;
-  }
-
-  .view-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 11px;
-    border: none;
-    background: transparent;
-    color: #888;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-
-  .view-btn.active {
-    background: white;
-    color: #111;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   }
 
   .grid-container {

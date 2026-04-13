@@ -68,20 +68,25 @@ const routes = app
   })
   .get('/api/daily-spotlights', async (c) => {
     const tenantId = c.get('tenantId')
-    const spotlights = await c.env.DB.prepare(`
-      SELECT 
-        ds.title, 
-        ds.subtitle, 
-        mi.description, 
-        mii.image_url 
-      FROM daily_spotlights ds
-      JOIN menu_items mi ON ds.menu_item_id = mi.id
-      JOIN menu_item_images mii ON mi.id = mii.menu_item_id
-      WHERE ds.tenant_id = ? AND ds.is_active = 1
-      ORDER BY ds.priority DESC
-    `).bind(tenantId).all()
-    
-    return c.json(spotlights.results)
+    try {
+      const spotlights = await c.env.DB.prepare(`
+        SELECT 
+          mi.id as dishId,
+          ds.title, 
+          ds.subtitle, 
+          mi.description,
+          mii.image_url
+        FROM daily_spotlights ds
+        JOIN menu_items mi ON ds.menu_item_id = mi.id
+        LEFT JOIN menu_item_images mii ON mi.id = mii.menu_item_id
+        WHERE ds.tenant_id = ? AND ds.is_active = 1
+      `).bind(tenantId).all()
+      
+      return c.json(spotlights.results || [])
+    } catch (err: any) {
+      console.error('Spotlight worker error:', err)
+      return c.json({ error: err.message }, 500)
+    }
   })
 
 export type AppType = typeof routes

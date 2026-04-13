@@ -8,15 +8,27 @@ export const load: PageServerLoad = async (event) => {
       apiFetch(event, "/api/brand-settings"),
     ]);
 
-    const spotlights = await spotlightsRes.json();
-    const brand = await brandRes.json();
+    let spotlights = [];
+    if (spotlightsRes.ok) {
+      spotlights = await spotlightsRes.json();
+      console.log("SPOTLIGHTS DATA:", JSON.stringify(spotlights, null, 2));
+    } else {
+      console.error("Spotlights fetch failed:", await spotlightsRes.text());
+    }
+
+    let brand = null;
+    if (brandRes.ok) {
+      brand = await brandRes.json();
+    } else {
+      console.error("Brand settings fetch failed:", await brandRes.text());
+    }
 
     return {
       spotlights,
       brand,
     };
   } catch (error) {
-    console.error("Failed to fetch home data:", error);
+    console.error("Critical failure during home data load:", error);
     return {
       spotlights: [],
       brand: null,

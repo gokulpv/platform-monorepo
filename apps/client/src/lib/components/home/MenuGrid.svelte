@@ -1,14 +1,14 @@
 <script lang="ts">
   import { resolveImagePath } from "$lib/utils/image";
+  import { goto } from "$app/navigation";
 
-  let { items = [
-    { name: "BBQ Ribs", price: "$24", image: "/assets/menu/most_ordered_dish.png", time: "25 min" },
-    { name: "Caesar Salad", price: "$12", image: "/assets/menu/most_ordered_dish.png", time: "15 min" },
-    { name: "Grilled Salmon", price: "$28", image: "/assets/menu/most_ordered_dish.png", time: "20 min" },
-    { name: "Mushroom Risotto", price: "$22", image: "/assets/menu/most_ordered_dish.png", time: "30 min" },
-    { name: "Steak Frites", price: "$32", image: "/assets/menu/most_ordered_dish.png", time: "25 min" },
-    { name: "Lobster Bisque", price: "$18", image: "/assets/menu/most_ordered_dish.png", time: "20 min" }
-  ] } = $props();
+  let { items = [] } = $props();
+
+  function navigateToDetail(id: string) {
+    if (id) {
+      goto(`/dish/${id}`);
+    }
+  }
 </script>
 
 <div class="menu-grid">
@@ -23,10 +23,16 @@
 
   <div class="grid">
     {#each items as item}
-      <div class="card">
+      <div 
+        class="card" 
+        role="button" 
+        tabindex="0"
+        onclick={() => navigateToDetail(item.id)}
+        onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigateToDetail(item.id); }}
+      >
         <div class="image-wrapper">
           <img src={resolveImagePath(item.image)} alt={item.name} class="image" />
-          <button class="add-btn">+</button>
+          <button class="add-btn" aria-label="Add to cart" onclick={(e) => { e.stopPropagation(); /* handle add to cart */ }}>+</button>
         </div>
         <div class="content">
           <h3 class="name">{item.name}</h3>
@@ -83,7 +89,17 @@
     gap: 1.25rem;
   }
 
-  .card { border-radius: 20px; overflow: hidden; }
+  .card { 
+    border-radius: 20px; 
+    overflow: hidden; 
+    transition: all 0.25s cubic-bezier(0.33, 1, 0.68, 1);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .card:active {
+    transform: scale(0.96);
+    opacity: 0.9;
+  }
 
   .image-wrapper {
     position: relative;

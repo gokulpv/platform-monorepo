@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { mockDishes } from "$lib/data/mock-menu";
   import AppHero from "$lib/components/shared/AppHero.svelte";
   import PageLayout from "$lib/layouts/PageLayout.svelte";
   import CategoryScroll from "$lib/components/home/CategoryScroll.svelte";
@@ -8,6 +9,8 @@
   
   let { data } = $props();
   const spotlights = $derived(data.spotlights || []);
+  const mostOrdered = $derived(mockDishes.slice(0, 3));
+  const gridDishes = $derived(mockDishes);
 
   let searchQuery = $state("");
 
@@ -24,11 +27,19 @@
 </svelte:head>
 
 <PageLayout>
-  {#snippet hero()}
+  {#snippet nav()}
     <AppHero 
       mode="carousel" 
       items={spotlights} 
       showVegToggle={true} 
+      topBarOnly={true}
+    />
+  {/snippet}
+
+  {#snippet hero()}
+    <AppHero 
+      mode="carousel" 
+      items={spotlights} 
     />
   {/snippet}
 
@@ -58,10 +69,10 @@
       <h2 class="section-title">OUR MOST ORDERED</h2>
       <button class="view-all">View all</button>
     </div>
-    <MostOrderedCards />
+    <MostOrderedCards items={mostOrdered} />
   </section>
 
-  <MenuGrid />
+  <MenuGrid items={gridDishes} />
 
   <footer class="footer">
     <div class="logo">KOI</div>

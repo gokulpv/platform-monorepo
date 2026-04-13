@@ -62,7 +62,7 @@
     margin-top: -2rem; /* Overlap with hero slightly for better curve */
     position: relative;
     z-index: 10;
-    padding: 1.5rem 0 0;
+    padding: 1rem 0 0;
     box-shadow: 0 -10px 30px rgba(0,0,0,0.05);
     border-bottom: 1px solid #f0f0f0;
   }
@@ -73,7 +73,7 @@
     scrollbar-width: none;
     padding: 0 1rem;
     justify-content: space-between;
-    gap: 0.5rem;
+    gap: 0.25rem;
   }
 
   .tabs-scroll::-webkit-scrollbar {
@@ -84,12 +84,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
     background: none;
     border: none;
-    padding: 0 0.5rem 1rem;
+    padding: 0 0.5rem 0.75rem;
     cursor: pointer;
-    min-width: 80px;
+    min-width: 70px;
     flex: 1;
     opacity: 0.4;
     transition: all 0.2s ease;
@@ -101,12 +101,18 @@
   }
 
   .icon-wrap {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #000;
+  }
+
+  /* Make the SVG inside respect the icon-wrap size */
+  .icon-wrap svg {
+    width: 20px;
+    height: 20px;
   }
 
   .tab-item.active .icon-wrap {
@@ -114,22 +120,31 @@
   }
 
   .tab-name {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: 700;
     color: #111;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.2px;
     white-space: nowrap;
   }
 
-  /* Active line indicator at the bottom of the tab */
   .tab-item.active::after {
     content: '';
     position: absolute;
     bottom: 0;
-    left: 10%;
-    right: 10%;
-    height: 3px;
+    left: 20%;
+    right: 20%;
+    height: 2px;
     background: #111;
     border-radius: 2px 2px 0 0;
+  }
+
+  .tab-item {
+    transition: all 0.25s cubic-bezier(0.33, 1, 0.68, 1);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .tab-item:active {
+    transform: scale(0.92);
+    opacity: 0.7;
   }
 </style>
