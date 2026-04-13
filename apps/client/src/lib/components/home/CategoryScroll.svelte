@@ -33,7 +33,7 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem 0.5rem;
-    padding: 1rem 1rem;
+    padding: 1rem;
   }
 
   .category-item {
@@ -43,7 +43,6 @@
     gap: 0.75rem;
     background: none;
     border: none;
-    cursor: pointer;
     padding: 0;
   }
 
@@ -56,24 +55,11 @@
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
-    transition: all 0.2s ease;
     background: white;
   }
 
-  .active .icon-circle {
-    border-color: #111;
-    background: #f9f9f9;
-    transform: scale(1.05);
-  }
+  .active .icon-circle { border-color: #111; background: #f9f9f9; transform: scale(1.05); }
 
-  .name {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: #666;
-  }
-
-  .active .name {
-    color: #111;
-    font-weight: 600;
-  }
+  .name { font-size: 0.8rem; font-weight: 500; color: #666; }
+  .active .name { color: #111; font-weight: 600; }
 </style>

@@ -55,13 +55,13 @@
   :global(body) {
     margin: 0;
     padding: 0;
-    overflow: hidden;
-    background-color: var(--bg);
   }
 
   .splash {
     height: 100vh;
+    height: 100dvh;
     width: 100%;
+    overflow: hidden; /* Lock scroll here instead of global body */
     background-color: var(--bg);
     background-image:
       radial-gradient(circle at top right, rgba(0, 0, 0, 0.2), transparent),

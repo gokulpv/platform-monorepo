@@ -1,0 +1,45 @@
+/* Standard resets */
+* {
+	box-sizing: border-box;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* Common container for mobile-first centered layout */
+.mobile-container {
+	position: relative;
+	max-width: 500px;
+	margin: 0 auto;
+	min-height: 100dvh;
+}
+
+html {
+	-webkit-tap-highlight-color: transparent;
+}
+
+button:focus,
+button:focus-visible,
+[type="button"]:focus,
+[type="button"]:focus-visible,
+[type="submit"]:focus,
+[type="submit"]:focus-visible,
+[type="reset"]:focus,
+[type="reset"]:focus-visible,
+a:focus,
+a:focus-visible,
+[role="button"]:focus,
+[role="button"]:focus-visible {
+	outline: none;
+	box-shadow: none;
+}

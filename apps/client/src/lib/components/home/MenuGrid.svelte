@@ -2,12 +2,12 @@
   import { resolveImagePath } from "$lib/utils/image";
 
   let { items = [
-    { name: "BBQ Ribs", price: "$24", image: "/images/placeholder.png", time: "25 min" },
-    { name: "Caesar Salad", price: "$12", image: "/images/placeholder.png", time: "15 min" },
-    { name: "Grilled Salmon", price: "$28", image: "/images/placeholder.png", time: "20 min" },
-    { name: "Mushroom Risotto", price: "$22", image: "/images/placeholder.png", time: "30 min" },
-    { name: "Steak Frites", price: "$32", image: "/images/placeholder.png", time: "25 min" },
-    { name: "Lobster Bisque", price: "$18", image: "/images/placeholder.png", time: "20 min" }
+    { name: "BBQ Ribs", price: "$24", image: "/assets/menu/most_ordered_dish.png", time: "25 min" },
+    { name: "Caesar Salad", price: "$12", image: "/assets/menu/most_ordered_dish.png", time: "15 min" },
+    { name: "Grilled Salmon", price: "$28", image: "/assets/menu/most_ordered_dish.png", time: "20 min" },
+    { name: "Mushroom Risotto", price: "$22", image: "/assets/menu/most_ordered_dish.png", time: "30 min" },
+    { name: "Steak Frites", price: "$32", image: "/assets/menu/most_ordered_dish.png", time: "25 min" },
+    { name: "Lobster Bisque", price: "$18", image: "/assets/menu/most_ordered_dish.png", time: "20 min" }
   ] } = $props();
 </script>
 
@@ -41,9 +41,7 @@
 </div>
 
 <style>
-  .menu-grid {
-    padding: 1rem 1.5rem 4rem;
-  }
+  .menu-grid { padding: 1rem 1.5rem 4rem; }
 
   .header {
     display: flex;
@@ -52,11 +50,7 @@
     margin-bottom: 1.5rem;
   }
 
-  .section-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin: 0;
-  }
+  .section-title { font-size: 1.25rem; font-weight: 700; margin: 0; }
 
   .filter {
     background: #f5f5f5;
@@ -67,7 +61,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
   }
 
   .grid {
@@ -76,12 +69,7 @@
     gap: 1.25rem;
   }
 
-  .card {
-    background: white;
-    border-radius: 20px;
-    overflow: hidden;
-    transition: transform 0.2s ease;
-  }
+  .card { border-radius: 20px; overflow: hidden; }
 
   .image-wrapper {
     position: relative;
@@ -90,11 +78,7 @@
     overflow: hidden;
   }
 
-  .image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+  .image { width: 100%; height: 100%; object-fit: cover; }
 
   .add-btn {
     position: absolute;
@@ -111,13 +95,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
   }
 
-  .content {
-    padding: 0.75rem 0.25rem;
-  }
+  .content { padding: 0.75rem 0.25rem; }
 
   .name {
     font-size: 0.95rem;
@@ -126,21 +107,7 @@
     color: #111;
   }
 
-  .footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .price {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #111;
-  }
-
-  .time {
-    font-size: 0.7rem;
-    color: #888;
-    font-weight: 500;
-  }
+  .footer { display: flex; justify-content: space-between; align-items: center; }
+  .price { font-size: 1rem; font-weight: 700; color: #111; }
+  .time { font-size: 0.7rem; color: #888; font-weight: 500; }
 </style>

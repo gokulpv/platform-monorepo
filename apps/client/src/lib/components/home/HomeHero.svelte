@@ -1,38 +1,22 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import { resolveImagePath } from "$lib/utils/image";
-
   let { items = [] } = $props();
 
   let activeIndex = $state(0);
   let isVeg = $state(false);
-  let interval: any;
 
-  function nextSlide() {
-    if (items.length > 0) {
+  $effect(() => {
+    if (items.length <= 1) return;
+    const interval = setInterval(() => {
       activeIndex = (activeIndex + 1) % items.length;
-    }
-  }
+    }, 4000);
+    return () => clearInterval(interval);
+  });
 
   function goToSlide(index: number) {
     activeIndex = index;
-    resetInterval();
   }
-
-  function resetInterval() {
-    if (interval) clearInterval(interval);
-    if (items.length > 1) {
-      interval = setInterval(nextSlide, 4000);
-    }
-  }
-
-  onMount(() => {
-    resetInterval();
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  });
 </script>
 
 <section class="hero">
@@ -42,13 +26,10 @@
         class="background" 
         style="background-image: url({resolveImagePath(items[activeIndex].image_url)})"
         transition:fade={{ duration: 800 }}
-      >
-        <div class="overlay"></div>
-      </div>
+      ></div>
 
       <div class="content">
         <h1 class="title">Today's Spotlight Dish</h1>
-        
         {#key activeIndex}
           <div class="dynamic-content" transition:fade={{ duration: 600, delay: 100 }}>
             <p class="description">{items[activeIndex].subtitle || items[activeIndex].description}</p>
@@ -61,7 +42,6 @@
               class="indicator" 
               class:active={activeIndex === i}
               onclick={() => goToSlide(i)}
-              aria-label="Go to slide {i + 1}"
             ></button>
           {/each}
         </div>
@@ -69,7 +49,6 @@
     {/key}
   {:else}
     <div class="background placeholder">
-      <div class="overlay"></div>
       <div class="content">
         <h1 class="title">Welcome</h1>
         <p class="description">Loading today's specialties...</p>
@@ -77,10 +56,12 @@
     </div>
   {/if}
 
+  <div class="overlay"></div>
+
   <div class="top-bar">
-    <div class="brand-logo">
+    <a href="/" class="brand-logo">
       <div class="logo-inner">KOI</div>
-    </div>
+    </a>
     <button
       type="button"
       class="veg-toggle"
@@ -102,39 +83,35 @@
 </section>
 
 <style>
+  /* svh (not dvh): fixed layer must not resize when mobile browser chrome hides during scroll — dvh caused image vs text jitter. */
   .hero {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 50vh;
+    height: 50svh;
     overflow: hidden;
     z-index: 1;
     color: white;
     background: #000;
+    isolation: isolate;
+  }
+
+  .background, .overlay {
+    position: absolute;
+    inset: 0;
   }
 
   .background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
     background-size: cover;
     background-position: center;
   }
 
-  .placeholder {
-    background: #111;
-  }
+  .placeholder { background: #111; }
 
   .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(0deg, rgba(29, 0, 0, 0.9) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.4) 100%);
+    z-index: 1;
+    background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.6) 80%, rgba(0,0,0,1) 100%);
   }
 
   .top-bar {
@@ -146,18 +123,23 @@
     align-items: center;
   }
 
+  .brand-logo, .toggle-dot, .arrow-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+
   .brand-logo {
     width: 44px;
     height: 44px;
     background: #8B0000;
     border: 2px solid white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     font-weight: 800;
     font-size: 0.7rem;
     letter-spacing: 1px;
+    text-decoration: none;
+    color: white;
   }
 
   .veg-toggle {
@@ -166,7 +148,6 @@
     padding: 4px 12px 4px 6px;
     border-radius: 100px;
     border: none;
-    font: inherit;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -178,12 +159,8 @@
   .toggle-dot {
     width: 18px;
     height: 18px;
-    border-radius: 50%;
     background: #ccc;
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   .toggle-dot::after {
@@ -194,16 +171,19 @@
     background: white;
   }
 
-  .toggle-dot.veg {
-    background: #2e7d32;
-  }
+  .toggle-dot.veg { background: #2e7d32; }
 
   .content {
     position: absolute;
-    bottom: 8vh;
+    top: 48%;
+    bottom: max(1rem, env(safe-area-inset-bottom, 0px));
     left: 1.5rem;
-    right: 1.5rem;
+    right: 5.5rem;
     z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 0.25rem;
   }
 
   .title {
@@ -247,17 +227,13 @@
 
   .arrow-cta {
     position: absolute;
-    bottom: 8vh;
+    bottom: max(1rem, env(safe-area-inset-bottom, 0px));
     right: 1.5rem;
     width: 56px;
     height: 56px;
     background: white;
     color: black;
     border: none;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     z-index: 3;
     cursor: pointer;
     box-shadow: 0 10px 20px rgba(0,0,0,0.2);

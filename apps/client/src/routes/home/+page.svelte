@@ -17,14 +17,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
 </svelte:head>
 
-<main class="app-layout">
+<main class="mobile-container app-layout">
   <!-- Fixed background layer -->
   <div class="fixed-hero">
     <HomeHero items={spotlights} />
   </div>
 
-  <!-- Single Snapping Container -->
-  <div class="snap-container">
+  <!-- In-flow sections: document (html/body) scrolls so mobile browser chrome can hide -->
+  <div class="page-sections">
     <!-- Snap Point 1: Hero Reveal -->
     <section class="hero-spacer"></section>
 
@@ -66,32 +66,33 @@
 </main>
 
 <style>
+  :global(html) {
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll;
+  }
+
   :global(body) {
-    margin: 0;
-    padding: 0;
-    font-family: 'Outfit', sans-serif;
     background-color: #000;
     color: #111;
-    -webkit-font-smoothing: antialiased;
-    overflow: hidden;
+    overflow-x: hidden;
   }
 
   .app-layout {
-    position: relative;
-    max-width: 500px;
-    margin: 0 auto;
-    height: 100vh;
-    overflow: hidden;
+    /* Inherits from .mobile-container, adding page-specific overrides if any */
   }
 
+  /* svh matches HomeHero: stable while chrome UI animates (avoids shake vs dvh). */
   .fixed-hero {
     position: fixed;
     top: 0;
-    left: 0;
-    width: 100vw;
-    height: 50vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 500px;
+    height: 50svh;
     z-index: 1;
     pointer-events: none;
+    background: #000;
   }
 
   .fixed-hero :global(.hero) {
@@ -100,24 +101,16 @@
     pointer-events: auto;
   }
 
-  /* Shared Scroll Container */
-  .snap-container {
-    height: 100vh;
-    overflow-y: auto;
-    scroll-snap-type: y mandatory;
-    scrollbar-width: none;
+  .page-sections {
     position: relative;
-    z-index: 2;
-    background: transparent;
+    z-index: 2; /* Low but above hero */
+    pointer-events: none;
   }
 
-  .snap-container::-webkit-scrollbar {
-    display: none;
-  }
-
+  /* Match .fixed-hero (50svh) so the sheet does not overlap the hero. */
   .hero-spacer {
-    height: 45vh;
-    min-height: 45vh;
+    height: 50svh;
+    min-height: 50svh;
     scroll-snap-align: start;
     pointer-events: none;
   }
@@ -136,6 +129,9 @@
     box-shadow: 0 -10px 30px rgba(0,0,0,0.3);
     /* Removed overflow: hidden/auto and height constraint */
     padding-bottom: 2rem;
+    pointer-events: auto;
+    isolation: isolate; /* Ensure stacking context for rounding */
+    min-height: 100vh; /* Ensure it covers the screen when snapped */
   }
 
   .search-section {
