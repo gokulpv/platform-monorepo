@@ -30,9 +30,23 @@
         </div>
         <div class="content">
           <h3 class="name">{item.name}</h3>
+          
+          {#if item.type}
+            <div class="dietary-info">
+              <span class="veg-icon {item.type.toLowerCase()}">
+                <span class="dot"></span>
+              </span>
+              <span class="veg-label">{item.type}</span>
+              <span class="divider">|</span>
+              <span class="time">{item.time}</span>
+            </div>
+          {/if}
+
           <div class="footer">
             <span class="price">{item.price}</span>
-            <span class="time">⏱️ {item.time}</span>
+            {#if !item.type}
+              <span class="time">⏱️ {item.time}</span>
+            {/if}
           </div>
         </div>
       </div>
@@ -103,11 +117,59 @@
   .name {
     font-size: 0.95rem;
     font-weight: 600;
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 0.25rem 0;
     color: #111;
   }
 
+  .dietary-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: #888;
+    margin-bottom: 0.75rem;
+  }
+
+  .veg-icon {
+    width: 14px;
+    height: 14px;
+    border: 2px solid #2e7d32;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+  }
+
+  .veg-icon.non-veg {
+    border-color: #d32f2f;
+  }
+
+  .veg-icon .dot {
+    width: 6px;
+    height: 6px;
+    background: #2e7d32;
+    border-radius: 50%;
+  }
+
+  .veg-icon.non-veg .dot {
+    background: #d32f2f;
+  }
+
+  .veg-label {
+    color: #2e7d32;
+    font-weight: 600;
+  }
+
+  .veg-icon.non-veg + .veg-label {
+    color: #d32f2f;
+  }
+
+  .divider {
+    color: #ddd;
+    font-weight: 300;
+  }
+
   .footer { display: flex; justify-content: space-between; align-items: center; }
-  .price { font-size: 1rem; font-weight: 700; color: #111; }
-  .time { font-size: 0.7rem; color: #888; font-weight: 500; }
+  .price { font-size: 0.95rem; font-weight: 700; color: #111; }
+  .time { font-size: 0.75rem; color: #888; font-weight: 500; }
 </style>

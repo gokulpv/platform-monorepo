@@ -53,7 +53,7 @@
     width: 100%;
     overflow-x: auto;
     scrollbar-width: none;
-    padding: 0 1.5rem;
+    padding: 1rem 0;
   }
   .scroll-container::-webkit-scrollbar { display: none; }
 
@@ -77,6 +77,9 @@
     color: white;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   }
+
+  .card:first-child { margin-left: 1.5rem; }
+  .card:last-child { margin-right: 1.5rem; }
 
   .overlay {
     position: absolute;
