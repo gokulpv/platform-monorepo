@@ -26,18 +26,7 @@
         <h1 class="dish-name">{dish.name}</h1>
         <div class="price-tag">{dish.price}</div>
       </div>
-
-      <div class="stats-row">
-        <div class="dietary-tag" class:non-veg={dish.type === 'Non-Veg'}>
-          <div class="dot-wrap">
-            <div class="dot"></div>
-          </div>
-          {dish.type === 'Non-Veg' ? 'Non veg' : 'Veg'}
-        </div>
-        <span class="divider">•</span>
-        <span class="time">{dish.time}</span>
-      </div>
-
+... (lines 30-41)
       <p class="cuisine-info">{dish.cuisine}</p>
     </div>
 
@@ -45,18 +34,23 @@
       <div class="dish-platform">
         <div class="platform-base"></div>
         <div class="img-container">
-          <img src={resolveImagePath(dish.image)} alt={dish.name} class="main-img" />
+          <img 
+            src={resolveImagePath(dish.image)} 
+            alt={dish.name} 
+            class="main-img" 
+            style="view-transition-name: dish-img-{dish.id}"
+          />
         </div>
       </div>
       
-      <button class="ar-btn">
+      <button class="ar-btn" style="view-transition-name: ar-button">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
         </svg>
         View on your table
       </button>
 
-      <button class="add-btn" aria-label="Add to cart">
+      <button class="add-btn" aria-label="Add to cart" style="view-transition-name: add-button-{dish.id}">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
           <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
         </svg>
@@ -176,8 +170,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0.5rem 0;
-    min-height: 200px;
+    margin: 0.25rem 0;
+    min-height: 180px;
     width: 100%;
   }
 
@@ -210,6 +204,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 24px;
+    overflow: hidden;
   }
 
   .main-img {
@@ -217,6 +213,7 @@
     max-height: 100%;
     object-fit: contain;
     filter: drop-shadow(0 20px 40px rgba(0,0,0,0.12));
+    mix-blend-mode: multiply;
   }
 
   .ar-btn {
@@ -235,7 +232,7 @@
     gap: 0.5rem;
     font-size: 0.75rem;
     font-weight: 600;
-    z-index: 10;
+    z-index: 50;
     cursor: pointer;
     box-shadow: 0 8px 16px rgba(0,0,0,0.15);
     white-space: nowrap;

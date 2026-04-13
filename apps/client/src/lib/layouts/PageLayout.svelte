@@ -6,10 +6,19 @@
    * children: Default snippet for the sheet content
    * heroHeight: CSS height for the hero section (default 50svh)
    */
-  let { hero, nav, children, heroHeight = "50svh" } = $props();
+  let {
+    hero,
+    nav,
+    children,
+    heroHeight = "50svh",
+    primaryColor = "#4A0404",
+  } = $props();
 </script>
 
-<div class="page-layout-root" style="--hero-height: {heroHeight}">
+<div
+  class="page-layout-root"
+  style="--hero-height: {heroHeight}; --brand-primary: {primaryColor}"
+>
   <!-- Persistent navigation layer -->
   <div class="persistent-nav-layer">
     {@render nav?.()}
@@ -56,6 +65,7 @@
     max-width: 500px;
     margin: 0 auto;
     position: relative;
+    background-color: var(--brand-primary);
   }
 
   .persistent-nav-layer {
@@ -113,7 +123,7 @@
   .content-wrapper {
     background: white;
     border-radius: 32px 32px 0 0;
-    box-shadow: 0 -10px 40px rgba(0,0,0,0.4);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.4);
     pointer-events: auto;
     isolation: isolate;
     min-height: 1000px;

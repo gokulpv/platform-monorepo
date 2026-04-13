@@ -5,7 +5,7 @@
 
   const brand = $derived(data || {});
   const tenantName = $derived(brand.tenant_name || "Platform");
-  const primaryColor = $derived(brand.primary_color || "#111111"); 
+  const primaryColor = $derived(brand.primary_color || "#111111");
   const secondaryColor = $derived(brand.secondary_color || "#333333");
   const logoUrl = $derived(resolveImagePath(brand.logo_url));
   const location = $derived(brand.location || "Location not set");
@@ -31,7 +31,9 @@
       {#if logoUrl}
         <img src={logoUrl} alt="Logo" class="logo" />
       {:else}
-        <div class="logo-placeholder">{tenantName.substring(0, 1).toUpperCase()}</div>
+        <div class="logo-placeholder">
+          {tenantName.substring(0, 1).toUpperCase()}
+        </div>
       {/if}
     </div>
 
@@ -139,6 +141,15 @@
     gap: 0.75rem;
     cursor: pointer;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    transition:
+      transform 0.2s cubic-bezier(0.33, 1, 0.68, 1),
+      opacity 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .cta:active {
+    transform: scale(0.96);
+    opacity: 0.9;
   }
 
   .icon {

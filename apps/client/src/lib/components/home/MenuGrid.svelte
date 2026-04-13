@@ -31,8 +31,18 @@
         onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigateToDetail(item.id); }}
       >
         <div class="image-wrapper">
-          <img src={resolveImagePath(item.image)} alt={item.name} class="image" />
-          <button class="add-btn" aria-label="Add to cart" onclick={(e) => { e.stopPropagation(); /* handle add to cart */ }}>+</button>
+          <img 
+            src={resolveImagePath(item.image)} 
+            alt={item.name} 
+            class="image" 
+            style="view-transition-name: dish-img-{item.id}"
+          />
+          <button 
+            class="add-btn" 
+            aria-label="Add to cart" 
+            onclick={(e) => { e.stopPropagation(); /* handle add to cart */ }}
+            style="view-transition-name: add-button-{item.id}"
+          >+</button>
         </div>
         <div class="content">
           <h3 class="name">{item.name}</h3>
@@ -108,7 +118,7 @@
     overflow: hidden;
   }
 
-  .image { width: 100%; height: 100%; object-fit: cover; }
+  .image { width: 100%; height: 100%; object-fit: cover; border-radius: 20px; }
 
   .add-btn {
     position: absolute;

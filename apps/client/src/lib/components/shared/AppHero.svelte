@@ -18,7 +18,8 @@
     showVegToggle = false,
     showBack = false,
     backPath = "/home",
-    topBarOnly = false
+    topBarOnly = false,
+    primaryColor = "#4A0404"
   } = $props();
 
   let activeIndex = $state(0);
@@ -93,26 +94,30 @@
     </div>
   </div>
 {:else}
-  <section class="hero-container">
+  <section class="hero-container" style="background-color: #000">
     <!-- Dynamic Background -->
     {#if mode === "carousel" && items && items.length > 0 && items[activeIndex]}
       {#key activeIndex}
+        {@const isStudio = items[activeIndex]?.image_url?.includes('categories') || items[activeIndex]?.image_url?.includes('highlight')}
         <a 
           href={items[activeIndex]?.dishId ? `/dish/${items[activeIndex].dishId}` : '#'}
           class="background-trigger"
+          class:studio={isStudio}
           aria-label="View spotlight dish details"
           transition:fade={{ duration: 800 }}
-          style="background-image: url({resolveImagePath(items[activeIndex]?.image_url)})"
+          style="background-image: url({resolveImagePath(items[activeIndex]?.image_url)}); background-color: {isStudio ? primaryColor : 'transparent'}"
         ></a>
       {/key}
     {:else if mode === "static" || bgImage}
+      {@const isStudio = (bgImage || items[0]?.image_url)?.includes('categories') || (bgImage || items[0]?.image_url)?.includes('highlight')}
       <div 
         class="background" 
-        style="background-image: url({resolveImagePath(bgImage || (items && items[0]?.image_url))})"
+        class:studio={isStudio}
+        style="background-image: url({resolveImagePath(bgImage || (items && items[0]?.image_url))}); background-color: {isStudio ? primaryColor : 'transparent'}"
       ></div>
     {/if}
 
-    <div class="overlay"></div>
+    <div class="overlay" class:studio-overlay={mode === "carousel" && (items[activeIndex]?.image_url?.includes('categories') || items[activeIndex]?.image_url?.includes('highlight'))} style="--overlay-color: {primaryColor}"></div>
 
     <!-- Hidden spacer to keep top-bar room if needed, but we render top-bar persistent externally -->
     <div class="top-bar placeholder"></div>
@@ -120,7 +125,8 @@
     <!-- Center/Bottom Content Wrapper -->
     <div class="hero-main-content">
       {#if mode === "carousel" && items && items.length > 0 && items[activeIndex]}
-        <div class="carousel-content">
+        {@const isStudio = items[activeIndex]?.image_url?.includes('categories')}
+        <div class="carousel-content" class:studio-text={isStudio}>
           <a href={items[activeIndex]?.dishId ? `/dish/${items[activeIndex].dishId}` : '#'} class="text-trigger">
             <h2 class="carousel-eyebrow">{title}</h2>
             {#key activeIndex}
@@ -185,6 +191,14 @@
     width: 100%;
     height: 100%;
     z-index: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .background-trigger.studio {
+    background-size: contain;
+    background-position: center 25%;
   }
 
   .text-trigger {
@@ -206,9 +220,19 @@
     background-position: center;
   }
 
+  .background.studio {
+    background-size: contain;
+    background-position: center 25%;
+  }
+
   .overlay {
     z-index: 1;
     background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.85) 80%, rgba(0,0,0,1) 100%);
+    pointer-events: none;
+  }
+
+  .overlay.studio-overlay {
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, var(--overlay-color, #4A0404) 90%);
   }
 
   .top-bar {
@@ -319,6 +343,10 @@
 
   .carousel-eyebrow { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; font-weight: 400; opacity: 0.6; }
   
+  .studio-text .carousel-eyebrow { color: #fff; opacity: 0.7; }
+  .studio-text .description { color: #fff; }
+  .studio-text .indicator { background: rgba(255,255,255,0.3); }
+  .studio-text .indicator.active { background: #fff; }
   .static-content {
     flex: 1;
     display: flex;

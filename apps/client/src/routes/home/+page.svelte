@@ -6,11 +6,24 @@
   import MostOrderedCards from "$lib/components/home/MostOrderedCards.svelte";
   import MenuGrid from "$lib/components/home/MenuGrid.svelte";
   import { goto } from "$app/navigation";
-  
+
   let { data } = $props();
-  const spotlights = $derived(data.spotlights || []);
+  const rawSpotlights = $derived(data.spotlights || []);
+
+  // Map raw spotlights to use our new high-quality category images for specific dishes
+  const spotlights = $derived(
+    rawSpotlights.map((item) => {
+      if (item.dishId === 1)
+        return { ...item, image_url: "/assets/categories/starters.png" };
+      if (item.dishId === 3)
+        return { ...item, image_url: "/assets/menu/highlight.png" };
+      return item;
+    }),
+  );
+
   const mostOrdered = $derived(mockDishes.slice(0, 3));
   const gridDishes = $derived(mockDishes);
+  const primaryColor = $derived(data.brand?.primary_color || "#4A0404");
 
   let searchQuery = $state("");
 
@@ -21,36 +34,49 @@
 
 <svelte:head>
   <title>Home | 3D Menu</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin="anonymous"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+    rel="stylesheet"
+  />
 </svelte:head>
 
-<PageLayout>
+<PageLayout {primaryColor}>
   {#snippet nav()}
-    <AppHero 
-      mode="carousel" 
-      items={spotlights} 
-      showVegToggle={true} 
+    <AppHero
+      mode="carousel"
+      items={spotlights}
+      showVegToggle={true}
       topBarOnly={true}
+      {primaryColor}
     />
   {/snippet}
 
   {#snippet hero()}
-    <AppHero 
-      mode="carousel" 
-      items={spotlights} 
-    />
+    <AppHero mode="carousel" items={spotlights} {primaryColor} />
   {/snippet}
 
   <section class="search-section">
     <div class="search-bar">
-      <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+      <svg
+        class="search-icon"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+      >
+        <circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
       </svg>
-      <input 
-        type="text" 
-        placeholder="Search dishes or ingredients" 
+      <input
+        type="text"
+        placeholder="Search dishes or ingredients"
         bind:value={searchQuery}
       />
     </div>
@@ -59,7 +85,9 @@
   <section class="categories-section">
     <div class="header">
       <h2 class="title">What would you like to have today?</h2>
-      <button class="view-all" onclick={navToCategories}>SEE ALL <span class="arrow">→</span></button>
+      <button class="view-all" onclick={navToCategories}
+        >SEE ALL <span class="arrow">→</span></button
+      >
     </div>
     <CategoryScroll />
   </section>
@@ -120,7 +148,7 @@
   }
 
   .categories-section .title {
-    font-family: 'Outfit', sans-serif;
+    font-family: "Outfit", sans-serif;
     font-size: 1.3rem;
     font-weight: 600;
     margin: 0;
@@ -175,7 +203,7 @@
   }
 
   .logo {
-    font-family: 'Playfair Display', serif;
+    font-family: "Playfair Display", serif;
     font-size: 1.5rem;
     font-weight: 800;
     letter-spacing: 2px;
