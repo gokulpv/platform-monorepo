@@ -26,6 +26,6 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }) => {
   const headers = new Headers(request.headers);
   const tenant =
     event.locals.subdomain?.trim() || env.TENANT_FALLBACK?.trim() || "t_koi";
-  headers.set("x-tenant-subdomain", "t_koi");
+  headers.set("x-tenant-subdomain", tenant);
   return fetch(new Request(request, { headers }));
 };

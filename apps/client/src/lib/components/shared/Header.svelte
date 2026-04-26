@@ -5,6 +5,7 @@
         showLogo = true,
         showBack = false,
         showVegToggle = true,
+        logoUrl = "/assets/logos/koi.png",
         goBack = () => window.history.back(),
     } = $props();
 </script>
@@ -12,7 +13,7 @@
 <section class="nav-container">
     {#if showLogo}
         <a href="/" class="logo">
-            <img src={resolveImagePath("/assets/logos/koi.png")} alt="Logo" />
+            <img src={resolveImagePath(logoUrl)} alt="Logo" />
         </a>
     {/if}
 

@@ -13,13 +13,10 @@
 
   // Map raw spotlights to use our new high-quality category images for specific dishes
   const spotlights = $derived(
-    rawSpotlights.map((item) => {
-      if (item.dishId === 1)
-        return { ...item, image_url: "/assets/categories/starters.png" };
-      if (item.dishId === 3)
-        return { ...item, image_url: "/assets/menu/highlight.png" };
-      return item;
-    }),
+    rawSpotlights.map((item) => ({
+      ...item,
+      image_url: "/assets/menu/highlight.png",
+    })),
   );
 
   const mostOrdered = $derived(mockDishes.slice(0, 3));
@@ -39,7 +36,7 @@
 
 <PageLayout {primaryColor}>
   {#snippet nav()}
-    <Header />
+    <Header logoUrl={data.brand?.logo_url} />
   {/snippet}
 
   {#snippet hero()}
@@ -121,6 +118,13 @@
     font-size: 1rem;
     outline: none;
     font-weight: 400;
+  }
+
+  [role="button"]:focus-visible,
+  button:focus-visible,
+  a:focus-visible {
+    outline: none;
+    box-shadow: none;
   }
 
   .categories-section {
