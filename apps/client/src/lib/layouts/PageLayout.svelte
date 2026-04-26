@@ -2,6 +2,14 @@
   let { hero, nav, children, heroHeight = "50svh", primaryColor } = $props();
 </script>
 
+<svelte:head>
+  <meta name="theme-color" content={primaryColor} />
+  <style>
+    body { background-color: {primaryColor}; }
+    html { background-color: {primaryColor}; }
+  </style>
+</svelte:head>
+
 <div class="page-layout-root" style="--brand-primary: {primaryColor}">
   <!-- Persistent navigation layer -->
   <div class="persistent-nav-layer">
