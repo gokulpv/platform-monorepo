@@ -44,6 +44,8 @@
       goto(`/dish/${items[activeIndex].id}`);
     }
   }
+
+  console.log(resolveImagePath(items[0].image_url));
 </script>
 
 <section class="hero-container" style="--hero-primary: {primaryColor}">

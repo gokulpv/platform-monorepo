@@ -15,7 +15,7 @@
   const spotlights = $derived(
     rawSpotlights.map((item) => ({
       ...item,
-      image_url: "/assets/menu/highlight.png",
+      image_url: "menu/highlight.png",
     })),
   );
 
