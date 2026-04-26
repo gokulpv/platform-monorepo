@@ -2,9 +2,7 @@
   import { resolveImagePath } from "$lib/utils/image";
   import { goto } from "$app/navigation";
 
-  let {
-    items = [],
-  } = $props();
+  let { items = [] } = $props();
 
   function navigateToDetail(id: string) {
     if (id) {
@@ -14,7 +12,6 @@
 </script>
 
 <div class="most-ordered">
-
   <div class="scroll-container">
     <div class="cards">
       {#each items as item}
@@ -36,15 +33,14 @@
 </div>
 
 <style>
-  .most-ordered { padding: 1rem 0; }
-
   .scroll-container {
     width: 100%;
     overflow-x: auto;
     scrollbar-width: none;
-    padding: 1rem 0;
   }
-  .scroll-container::-webkit-scrollbar { display: none; }
+  .scroll-container::-webkit-scrollbar {
+    display: none;
+  }
 
   .cards {
     display: flex;
@@ -55,35 +51,28 @@
   .card {
     width: 240px;
     height: 160px;
-    background: #222 center/cover;
+    background: green center/cover;
     border-radius: 24px;
     position: relative;
     overflow: hidden;
-    padding: 1.25rem;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     color: white;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     transition: all 0.25s cubic-bezier(0.33, 1, 0.68, 1);
     -webkit-tap-highlight-color: transparent;
   }
 
-  .card:active {
-    transform: scale(0.96);
-    opacity: 0.9;
-  }
-
-  .card:first-child { margin-left: 1.5rem; }
-  .card:last-child { margin-right: 1.5rem; }
-
   .overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, transparent 70%);
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.6), transparent 80%);
   }
 
-  .info { position: relative; z-index: 1; }
+  .info {
+    position: relative;
+    z-index: 1;
+  }
 
   .rating {
     display: inline-block;
@@ -96,6 +85,14 @@
     margin-bottom: 0.5rem;
   }
 
-  .name { font-size: 1rem; margin: 0; font-weight: 600; }
-  .price { font-size: 0.85rem; margin-top: 4px; opacity: 0.9; }
+  .name {
+    font-size: 1rem;
+    margin: 0;
+    font-weight: 600;
+  }
+  .price {
+    font-size: 0.85rem;
+    margin-top: 4px;
+    opacity: 0.9;
+  }
 </style>

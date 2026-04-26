@@ -12,41 +12,35 @@
 </script>
 
 <div class="menu-grid">
-  <div class="header">
-    <h2 class="section-title">All Items</h2>
-    <div class="view-options">
-      <button type="button" class="filter" aria-label="Filter menu">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16m-7 6h7"/></svg>
-      </button>
-    </div>
-  </div>
-
   <div class="grid">
     {#each items as item}
-      <div 
-        class="card" 
-        role="button" 
+      <div
+        class="card"
         tabindex="0"
         onclick={() => navigateToDetail(item.id)}
-        onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigateToDetail(item.id); }}
+        onkeydown={(e) => {
+          if (e.key === "Enter" || e.key === " ") navigateToDetail(item.id);
+        }}
       >
         <div class="image-wrapper">
-          <img 
-            src={resolveImagePath(item.image)} 
-            alt={item.name} 
-            class="image" 
-            style="view-transition-name: dish-img-{item.id}"
+          <img
+            src={resolveImagePath(item.image)}
+            alt={item.name}
+            class="image"
+            style="view-transition-name: dish-img-{item.id}; view-transition-class: dish-transition;"
           />
-          <button 
-            class="add-btn" 
-            aria-label="Add to cart" 
-            onclick={(e) => { e.stopPropagation(); /* handle add to cart */ }}
-            style="view-transition-name: add-button-{item.id}"
-          >+</button>
+          <button
+            class="add-btn"
+            aria-label="Add to cart"
+            onclick={(e) => {
+              e.stopPropagation(); /* handle add to cart */
+            }}
+            style="view-transition-name: add-button-{item.id}">+</button
+          >
         </div>
         <div class="content">
           <h3 class="name">{item.name}</h3>
-          
+
           {#if item.type}
             <div class="dietary-info">
               <span class="veg-icon {item.type.toLowerCase()}">
@@ -71,26 +65,26 @@
 </div>
 
 <style>
-  .menu-grid { padding: 1rem 1.5rem 4rem; }
-
-  .header {
+  .divider-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
+    gap: 1.5rem;
   }
 
-  .section-title { font-size: 1.25rem; font-weight: 700; margin: 0; }
+  .line {
+    flex: 1;
+    height: 1px;
+    background: #eee;
+  }
 
-  .filter {
-    background: #f5f5f5;
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .section-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin: 0;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
   }
 
   .grid {
@@ -99,16 +93,9 @@
     gap: 1.25rem;
   }
 
-  .card { 
-    border-radius: 20px; 
-    overflow: hidden; 
-    transition: all 0.25s cubic-bezier(0.33, 1, 0.68, 1);
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .card:active {
-    transform: scale(0.96);
-    opacity: 0.9;
+  .card {
+    border-radius: 20px;
+    overflow: hidden;
   }
 
   .image-wrapper {
@@ -118,7 +105,12 @@
     overflow: hidden;
   }
 
-  .image { width: 100%; height: 100%; object-fit: cover; border-radius: 20px; }
+  .image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+  }
 
   .add-btn {
     position: absolute;
@@ -135,10 +127,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   }
 
-  .content { padding: 0.75rem 0.25rem; }
+  .content {
+    padding: 0.75rem 0.25rem;
+  }
 
   .name {
     font-size: 0.95rem;
@@ -195,7 +189,19 @@
     font-weight: 300;
   }
 
-  .footer { display: flex; justify-content: space-between; align-items: center; }
-  .price { font-size: 0.95rem; font-weight: 700; color: #111; }
-  .time { font-size: 0.75rem; color: #888; font-weight: 500; }
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .price {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #111;
+  }
+  .time {
+    font-size: 0.75rem;
+    color: #888;
+    font-weight: 500;
+  }
 </style>

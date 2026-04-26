@@ -5,13 +5,13 @@
   import PageLayout from "$lib/layouts/PageLayout.svelte";
   import CategoryTabScroll from "$lib/components/categories/CategoryTabScroll.svelte";
   import MenuGrid from "$lib/components/home/MenuGrid.svelte";
-  import { resolveImagePath } from "$lib/utils/image";
+  import Header from "$lib/components/shared/Header.svelte";
+  import { goto } from "$app/navigation";
 
-  // Use shared mock data
-  const allItems = mockDishes;
-
-  // Detailed info for each category hero
-  const categoryMeta = {
+  const categoryMeta: Record<
+    string,
+    { desc: string; iconPath: string; bg: string }
+  > = {
     Starters: {
       desc: "Slow-boiled in rich Cajun butter with baby potatoes and herbs.",
       iconPath:
@@ -40,74 +40,96 @@
     },
   };
 
+  let { data } = $props();
+  const primaryColor = $derived(data.brand?.primary_color ?? "#4A0404");
+
   let selectedCategory = $state(
-    page.url.searchParams.get("category") || "Starters",
+    page.url.searchParams.get("category") ?? "Starters",
   );
   const activeMeta = $derived(
-    categoryMeta[selectedCategory] || categoryMeta["Starters"],
+    categoryMeta[selectedCategory] ?? categoryMeta["Starters"],
   );
   const filteredItems = $derived(
-    allItems.filter(
+    mockDishes.filter(
       (item) =>
         item.category.toLowerCase().includes(selectedCategory.toLowerCase()) ||
         selectedCategory.toLowerCase().includes(item.category.toLowerCase()),
     ),
   );
-
-  function handleCategoryChange(name: string) {
-    selectedCategory = name;
-  }
 </script>
 
 <svelte:head>
-  <title>{selectedCategory} | Categories</title>
+  <title>{selectedCategory} | Menu</title>
 </svelte:head>
 
-<PageLayout heroHeight="50svh">
+<PageLayout heroHeight="50svh" {primaryColor}>
   {#snippet nav()}
-    <AppHero mode="static" showBack={true} backPath="/home" topBarOnly={true} />
+    <Header showLogo={false} showBack={true} goBack={() => goto("/home")} />
   {/snippet}
 
   {#snippet hero()}
     <AppHero
-      mode="static"
       title={selectedCategory}
-      subtitle={activeMeta.desc}
-      iconPath={activeMeta.iconPath}
-      bgImage={activeMeta.bg}
+      description={activeMeta.desc}
+      bgImage={filteredItems[0]?.image || activeMeta.bg}
     />
   {/snippet}
 
   <div class="sticky-nav">
-    <CategoryTabScroll
-      bind:activeCategory={selectedCategory}
-      onSelect={handleCategoryChange}
-    />
+    <CategoryTabScroll bind:activeCategory={selectedCategory} />
   </div>
 
   <div class="grid-container">
-    <MenuGrid items={filteredItems} />
+    {#if filteredItems.length}
+      <MenuGrid items={filteredItems} />
+    {:else}
+      <p class="empty-state">Nothing here yet.</p>
+    {/if}
   </div>
 </PageLayout>
 
 <style>
   .sticky-nav {
-    position: sticky;
-    top: 0;
-    background: white;
-    z-index: 10;
-    border-radius: 32px 32px 0 0;
+    margin: -16px;
   }
 
   .grid-container {
-    padding-top: 0.5rem;
+    margin-top: 2rem;
   }
 
-  :global(.categories-page .menu-grid) {
-    padding-top: 0 !important;
+  .category-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #444;
+    margin-top: 2px;
   }
 
-  :global(.categories-page .menu-grid .header) {
-    display: none !important;
+  .category-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #111;
+    margin: 0 0 0.2rem;
+    line-height: 1.2;
+  }
+
+  .category-desc {
+    font-size: 0.78rem;
+    color: #888;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .empty-state {
+    text-align: center;
+    color: #aaa;
+    font-size: 0.9rem;
+    padding: 3rem 0;
+    margin: 0;
   }
 </style>

@@ -77,13 +77,11 @@
           >
           <h3 class="name" style="color: {cat.textColor}">{cat.name}</h3>
         </div>
-        <div class="image-container">
-          <img
-            src={resolveImagePath(cat.image)}
-            alt={cat.name}
-            class="cat-image"
-          />
-        </div>
+        <img
+          src={resolveImagePath(cat.image)}
+          alt={cat.name}
+          class="cat-image"
+        />
       </button>
     {/each}
   </div>
@@ -92,19 +90,16 @@
 <style>
   .categories-container {
     width: 100%;
-    margin-top: 0.5rem;
     overflow: hidden;
   }
 
   .scroll-wrapper {
     display: flex;
     gap: 1rem;
-    padding: 1rem 0;
     overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
     scroll-snap-type: x mandatory;
-    scroll-padding: 0 1.5rem;
   }
 
   .scroll-wrapper::-webkit-scrollbar {
@@ -113,10 +108,9 @@
 
   .category-card {
     flex: 0 0 140px;
-    height: 155px;
+    height: 140px;
     border-radius: 18px;
     border: none;
-    padding: 1.5rem 1.25rem;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -125,10 +119,6 @@
     overflow: hidden;
     cursor: pointer;
     scroll-snap-align: start;
-    transition:
-      transform 0.2s ease,
-      box-shadow 0.2s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   }
 
   .category-card:first-child {
@@ -167,21 +157,12 @@
     line-height: 1.1;
   }
 
-  .image-container {
-    position: absolute;
-    bottom: -15px;
-    right: -15px;
-    width: 100%;
-    height: 60%;
-    z-index: 1;
+  img {
+    mix-blend-mode: multiply;
+    width: 110%;
   }
 
-  .cat-image {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    object-position: bottom right;
-    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.15));
-    mix-blend-mode: multiply;
+  button {
+    padding: 16px;
   }
 </style>

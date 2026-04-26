@@ -6,6 +6,7 @@
   import MostOrderedCards from "$lib/components/home/MostOrderedCards.svelte";
   import MenuGrid from "$lib/components/home/MenuGrid.svelte";
   import { goto } from "$app/navigation";
+  import Header from "$lib/components/shared/Header.svelte";
 
   let { data } = $props();
   const rawSpotlights = $derived(data.spotlights || []);
@@ -34,27 +35,11 @@
 
 <svelte:head>
   <title>Home | 3D Menu</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link
-    rel="preconnect"
-    href="https://fonts.gstatic.com"
-    crossorigin="anonymous"
-  />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
-    rel="stylesheet"
-  />
 </svelte:head>
 
 <PageLayout {primaryColor}>
   {#snippet nav()}
-    <AppHero
-      mode="carousel"
-      items={spotlights}
-      showVegToggle={true}
-      topBarOnly={true}
-      {primaryColor}
-    />
+    <Header />
   {/snippet}
 
   {#snippet hero()}
@@ -84,7 +69,7 @@
 
   <section class="categories-section">
     <div class="header">
-      <h2 class="title">What would you like to have today?</h2>
+      <h2 class="title">What would you like?</h2>
       <button class="view-all" onclick={navToCategories}
         >SEE ALL <span class="arrow">→</span></button
       >
@@ -92,38 +77,40 @@
     <CategoryScroll />
   </section>
 
-  <section class="section-divider">
+  <section class="categories-section">
     <div class="header">
-      <h2 class="section-title">OUR MOST ORDERED</h2>
-      <button class="view-all">View all</button>
+      <h2 class="title">Our most ordered</h2>
+      <button class="view-all" onclick={navToCategories}
+        >SEE ALL <span class="arrow">→</span></button
+      >
     </div>
     <MostOrderedCards items={mostOrdered} />
   </section>
 
-  <MenuGrid items={gridDishes} />
-
-  <footer class="footer">
-    <div class="logo">KOI</div>
-    <p class="powered">Powered by Tap QR</p>
-  </footer>
+  <section class="categories-section">
+    <MenuGrid items={gridDishes} />
+  </section>
 </PageLayout>
 
 <style>
-  .search-section {
-    padding: 0 1.5rem 1rem;
+  :global(.scrolling-content-layer) {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    padding-bottom: 4rem !important;
   }
 
   .search-bar {
     display: flex;
     align-items: center;
     background: #f4f5f7;
-    padding: 1rem 1.25rem;
-    border-radius: 12px;
+    border-radius: 8px;
     gap: 0.75rem;
+    padding: 0.5rem 1rem;
   }
 
   .search-icon {
-    color: #555;
+    color: #c8c8c8;
   }
 
   .search-bar input {
@@ -144,12 +131,12 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    padding: 0 1.5rem 0.5rem;
+    margin-bottom: 24px;
   }
 
   .categories-section .title {
     font-family: "Outfit", sans-serif;
-    font-size: 1.3rem;
+    font-size: 1rem;
     font-weight: 600;
     margin: 0;
     line-height: 1.25;
@@ -175,44 +162,11 @@
     margin-top: -2px;
   }
 
-  .section-divider {
-    padding-top: 1rem;
-  }
-
-  .section-divider .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 1.5rem 0.5rem;
-  }
-
-  .section-title {
-    font-size: 0.9rem;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    margin: 0;
-    color: #000;
-    text-transform: uppercase;
-  }
-
   .footer {
-    padding: 4rem 1.5rem 6rem;
+    padding: 3rem 1rem;
     text-align: center;
     background: #fff;
-    border-top: 1px solid #f0f0f0;
-  }
-
-  .logo {
-    font-family: "Playfair Display", serif;
-    font-size: 1.5rem;
-    font-weight: 800;
-    letter-spacing: 2px;
-    margin-bottom: 0.5rem;
-  }
-
-  .powered {
-    font-size: 0.75rem;
-    color: #888;
-    margin: 0;
+    border-top: 1px solid #f8f8f8;
+    margin-top: 1rem;
   }
 </style>
