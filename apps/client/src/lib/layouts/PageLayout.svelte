@@ -49,7 +49,7 @@
     top: 0;
     width: 100%;
     display: block;
-    z-index: 100;
+    z-index: 1;
   }
 
   .fixed-hero-layer {
@@ -58,20 +58,21 @@
     height: 45vh;
     width: 100%;
     background-color: var(--brand-primary);
-    z-index: -2;
+    z-index: 0;
   }
 
   .content-section {
   }
 
   .scrolling-content-layer {
+    position: relative;
     background-color: #fff;
     border-radius: 16px;
     margin-top: 45vh;
     min-height: 100vh;
     overflow: hidden;
     padding: 16px;
-    z-index: 1;
+    z-index: 10;
   }
 
   .footer {
