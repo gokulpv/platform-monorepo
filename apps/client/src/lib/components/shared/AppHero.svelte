@@ -51,7 +51,7 @@
     {#each items as item, i}
       {#if i === activeIndex}
         <div class="hero-slide" in:fade={{ duration: 400 }}>
-          <img src={item.image_url} alt={item.name} />
+          <img src={resolveImagePath(item.image_url)} alt={item.name} />
           <div class="content">
             <h1 class="title">
               Today's<br /><span class="accent">Spotlight</span> Dish
