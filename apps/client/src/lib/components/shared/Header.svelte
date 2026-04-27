@@ -13,7 +13,7 @@
 <section class="nav-container">
     {#if showLogo}
         <a href="/" class="logo">
-            <img src={resolveImagePath(logoUrl)} alt="Logo" />
+            <img src={resolveImagePath(logoUrl)} alt="Logo" width="36" height="36" />
         </a>
     {/if}
 
@@ -72,7 +72,7 @@
         width: 36px;
         height: 36px;
         border-radius: 50%;
-        border: none;
+        border: 2px solid rgba(0, 0, 0, 0.15);
         background: rgba(255, 255, 255, 0.85);
         backdrop-filter: blur(8px);
         display: flex;
