@@ -44,8 +44,6 @@
       goto(`/dish/${items[activeIndex].id}`);
     }
   }
-
-  console.log(resolveImagePath(items[0].image_url));
 </script>
 
 <section class="hero-container" style="--hero-primary: {primaryColor}">
@@ -123,7 +121,7 @@
     width: 100%;
     background-image: linear-gradient(
       to top,
-      rgba(0, 0, 0, 0.9) 40%,
+      rgba(0, 0, 0, 0.6) 40%,
       transparent
     );
   }

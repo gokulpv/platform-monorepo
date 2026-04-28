@@ -13,7 +13,7 @@
       textColor: "#8B4513",
       accentColor: "#D2691E",
       borderColor: "#FFDADA",
-      image: "/assets/categories/starters.png",
+      image: "/assets/category-cards/starters.png",
     },
     {
       id: "main",
@@ -23,7 +23,7 @@
       textColor: "#D2691E",
       accentColor: "#E67E22",
       borderColor: "#FFE0B2",
-      image: "/assets/categories/main.png",
+      image: "/assets/category-cards/main.png",
     },
     {
       id: "salads",
@@ -33,7 +33,7 @@
       textColor: "#2E7D32",
       accentColor: "#4CAF50",
       borderColor: "#C8E6C9",
-      image: "/assets/categories/salads.png",
+      image: "/assets/category-cards/salads.png",
     },
     {
       id: "desserts",
@@ -43,7 +43,7 @@
       textColor: "#483D8B",
       accentColor: "#6A5ACD",
       borderColor: "#E1D5FF",
-      image: "/assets/categories/desserts.png",
+      image: "/assets/category-cards/desserts.png",
     },
     {
       id: "drinks",
@@ -53,7 +53,7 @@
       textColor: "#134B8B",
       accentColor: "#2980B9",
       borderColor: "#D1EBF7",
-      image: "/assets/categories/drinks.png",
+      image: "/assets/category-cards/drinks.png",
     },
   ];
 

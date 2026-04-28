@@ -64,7 +64,7 @@
 
 <PageLayout heroHeight="50svh" {primaryColor}>
   {#snippet nav()}
-    <Header showLogo={false} showBack={true} goBack={() => goto("/home")} />
+    <Header showLogo={false} showBack={true} showCart={true} goBack={() => goto("/home")} />
   {/snippet}
 
   {#snippet hero()}

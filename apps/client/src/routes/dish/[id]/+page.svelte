@@ -13,7 +13,7 @@
 </script>
 
 <div class="dish-detail-page">
-  <Header showLogo={false} showBack={true} showVegToggle={false} />
+  <Header showLogo={false} showBack={true} showCart={true} showVegToggle={false} />
 
   <main class="content">
     <div class="info-section">
@@ -111,7 +111,7 @@
   }
 
   .info-section {
-    padding: 0 1.5rem 1rem;
+    padding: 0 12px 1rem;
     flex-shrink: 0;
   }
 

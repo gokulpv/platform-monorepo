@@ -5,27 +5,27 @@
     {
       id: "starters",
       name: "Starters",
-      icon: `<path d="M11 6l-5 5m11-5l-5 5M9 22H5a2 2 0 01-2-2V7l2-2h14l2 2v13a2 2 0 01-2 2h-4"/><path d="M12 2v3"/><path d="M12 7v10"/><path d="M15 22v-3a2 2 0 00-2-2h-2a2 2 0 00-2 2v3"/>`,
+      emoji: "🥗",
     },
     {
       id: "main",
       name: "Main",
-      icon: `<path d="M3 11c0 4.4 3.6 8 8 8h2c4.4 0 8-3.6 8-8V5H3v6z"/><path d="M12 19v3"/><path d="M9 22h6"/>`,
+      emoji: "🍛",
     },
     {
       id: "desserts",
       name: "Desserts",
-      icon: `<path d="M12 2L4.5 9.5a4.95 4.95 0 000 7 4.95 4.95 0 007 0L19 9l-7-7z"/><path d="M12 22v-3"/><path d="M9 19h6"/>`,
+      emoji: "🍰",
     },
     {
       id: "drinks",
       name: "Drinks",
-      icon: `<path d="M16 2L8 10v10a2 2 0 002 2h4a2 2 0 002-2V10l-2-8z"/><path d="M8 10h8"/><path d="M12 15l1 1"/>`,
+      emoji: "🥤",
     },
     {
       id: "alcohol",
       name: "Alcohol",
-      icon: `<path d="M6 2h12l-6 9v11"/><path d="M8 22h8"/><path d="M12 11l-3 5h6"/>`,
+      emoji: "🍷",
     },
   ];
 
@@ -46,18 +46,7 @@
         onclick={() => handleSelect(cat.name)}
       >
         <div class="icon-wrap">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            {@html cat.icon}
-          </svg>
+          <span class="emoji">{cat.emoji}</span>
         </div>
         <span class="tab-name">{cat.name}</span>
       </button>
@@ -99,13 +88,8 @@
     cursor: pointer;
     min-width: 70px;
     flex: 1;
-    opacity: 0.4;
     transition: all 0.2s ease;
     position: relative;
-  }
-
-  .tab-item.active {
-    opacity: 1;
   }
 
   .icon-wrap {
@@ -118,9 +102,11 @@
   }
 
   /* Make the SVG inside respect the icon-wrap size */
-  .icon-wrap svg {
-    width: 20px;
-    height: 20px;
+  /* Size the emoji similar to the original SVG */
+  .icon-wrap .emoji {
+    font-size: 20px;
+    line-height: 1;
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
   }
 
   .tab-item.active .icon-wrap {
