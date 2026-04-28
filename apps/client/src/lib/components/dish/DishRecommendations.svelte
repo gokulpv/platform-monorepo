@@ -1,11 +1,28 @@
 <script lang="ts">
   import { resolveImagePath } from "$lib/utils/image";
   import { goto } from "$app/navigation";
+  import { tick } from "svelte";
   
-  let { dishes = [] } = $props();
+  let { dishes = [], activeId = "" } = $props();
+
+  let scrollContainer: HTMLDivElement | undefined = $state();
+
+  $effect(() => {
+    if (activeId && scrollContainer) {
+      // Use setTimeout to ensure mobile browser layout is fully painted
+      setTimeout(() => {
+        if (!scrollContainer) return;
+        const activeElement = scrollContainer.querySelector(`[data-id="${activeId}"]`) as HTMLElement;
+        if (activeElement) {
+          // Instant direct scroll assignment is 100% reliable on mobile Chrome with scroll-snap
+          scrollContainer.scrollLeft = activeElement.offsetLeft - 12;
+        }
+      }, 50);
+    }
+  });
 
   function navigateToDish(id: string) {
-    goto(`/dish/${id}`);
+    goto(`/dish/${id}`, { replaceState: true });
   }
 </script>
 
@@ -15,9 +32,13 @@
     <button class="view-all">SEE ALL <span class="arrow">→</span></button>
   </div>
 
-  <div class="cards-scroll">
-    {#each dishes as item}
-      <button class="rec-card" onclick={() => navigateToDish(item.id)}>
+  <div class="cards-scroll" bind:this={scrollContainer}>
+    {#each dishes as item (item.id)}
+      <button 
+        class="rec-card" 
+        data-id={item.id}
+        onclick={() => navigateToDish(item.id)}
+      >
         <div class="img-wrap">
           <img src={resolveImagePath(item.image)} alt={item.name} />
         </div>
@@ -42,7 +63,6 @@
 
 <style>
   .recommendations {
-    padding: 0 0 2rem;
     position: relative;
     z-index: 5;
   }
@@ -55,14 +75,17 @@
     display: flex;
     overflow-x: auto;
     scrollbar-width: none;
-    padding: 0 1.25rem;
+    padding: 0.5rem 12px 12px; /* Matches 12px header padding */
     gap: 0.75rem;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 12px;
   }
 
   .cards-scroll::-webkit-scrollbar { display: none; }
 
   .rec-card {
     flex: 0 0 220px;
+    scroll-snap-align: start;
     background: white;
     border: 1px solid rgba(0,0,0,0.05);
     border-radius: 16px;
@@ -71,13 +94,13 @@
     gap: 0.75rem;
     text-align: left;
     cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.33, 1, 0.68, 1);
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
   }
 
   .rec-card:active {
-    transform: scale(0.96);
-    opacity: 0.9;
+    transform: scale(0.98);
+    opacity: 0.95;
   }
 
   .img-wrap {

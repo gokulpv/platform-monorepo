@@ -145,8 +145,8 @@
     }
 
     .icon-btn:active {
-        transform: scale(0.9);
-        background: rgba(255, 255, 255, 0.6);
+        transform: scale(0.96);
+        background: rgba(255, 255, 255, 0.7);
     }
 
     .cart-btn {

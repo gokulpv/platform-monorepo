@@ -9,11 +9,17 @@
   const dish = $derived(
     mockDishes.find((d) => d.id === dishId) ?? mockDishes[0],
   );
-  const otherDishes = $derived(mockDishes.filter((d) => d.id !== dish.id));
+  const dishIndex = $derived(mockDishes.findIndex((d) => d.id === dish.id));
+  const otherDishes = $derived(mockDishes);
 </script>
 
 <div class="dish-detail-page">
-  <Header showLogo={false} showBack={true} showCart={true} showVegToggle={false} />
+  <Header
+    showLogo={false}
+    showBack={true}
+    showCart={true}
+    showVegToggle={false}
+  />
 
   <main class="content">
     <div class="info-section">
@@ -43,7 +49,6 @@
 
     <div class="visual-section">
       <div class="dish-platform">
-        <div class="platform-base"></div>
         <img
           src={resolveImagePath(dish.image)}
           alt={dish.name}
@@ -52,43 +57,44 @@
         />
       </div>
 
-      <button class="ar-btn" style="view-transition-name:ar-button">
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path
-            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
-          />
-          <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-          <line x1="12" y1="22.08" x2="12" y2="12" />
-        </svg>
-        View on your table
-      </button>
+      <div class="actions-row">
+        <div></div> <!-- Spacer for perfect centering -->
+        <button class="ar-btn" style="view-transition-name:ar-button">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+            />
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+            <line x1="12" y1="22.08" x2="12" y2="12" />
+          </svg>
+          View on your table
+        </button>
 
-      <button
-        class="add-btn"
-        aria-label="Add to cart"
-        style="view-transition-name:add-button-{dish.id}"
-      >
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="3"
-        >
-          <path d="M12 5v14M5 12h14" />
-        </svg>
-      </button>
+        <div class="right-action-wrapper">
+          <button class="add-btn" aria-label="Add to cart" style="view-transition-name:add-button-{dish.id}">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+            >
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
 
-    <DishRecommendations dishes={otherDishes} />
+    <DishRecommendations dishes={otherDishes} activeId={dish.id} />
   </main>
 </div>
 
@@ -196,38 +202,53 @@
     max-height: 100%;
     object-fit: contain;
     border-radius: 24px;
-    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.12));
     mix-blend-mode: multiply;
   }
 
-  .ar-btn {
+  .actions-row {
     position: absolute;
     bottom: 10%;
-    left: 50%;
-    translate: -50% 0;
+    left: 0;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    z-index: 20;
+  }
+
+  .right-action-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 0.75rem;
+  }
+
+  .ar-btn {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.6rem 1rem;
-    background: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    gap: 0.4rem;
+    height: 36px;
+    padding: 0 0.8rem;
+    background: rgba(0, 0, 0, 0.35);
     backdrop-filter: blur(12px);
     color: white;
-    font-size: 0.75rem;
-    font-weight: 600;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.7rem;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 100px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    box-shadow: none;
     white-space: nowrap;
     cursor: pointer;
-    z-index: 10;
+    transition: scale 0.2s;
+  }
+
+  .ar-btn:active {
+    scale: 0.98;
   }
 
   .add-btn {
-    position: absolute;
-    bottom: 0;
-    right: 1.5rem;
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -238,10 +259,10 @@
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     transition: scale 0.2s;
-    z-index: 20;
+    flex-shrink: 0;
   }
 
   .add-btn:active {
-    scale: 0.9;
+    scale: 0.96;
   }
 </style>

@@ -7,6 +7,12 @@
 
 	onNavigate((navigation) => {
 		if (!document.startViewTransition) return;
+		
+		// Skip view transition when navigating between dish detail pages
+		if (navigation.from?.route.id === '/dish/[id]' && navigation.to?.route.id === '/dish/[id]') {
+			return;
+		}
+
 		return new Promise((resolve) => {
 			document.startViewTransition(async () => {
 				resolve();
