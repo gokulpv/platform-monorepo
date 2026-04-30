@@ -46,15 +46,21 @@
   let selectedCategory = $state(
     page.url.searchParams.get("category") ?? "Starters",
   );
+  let searchQuery = $state("");
   const activeMeta = $derived(
     categoryMeta[selectedCategory] ?? categoryMeta["Starters"],
   );
   const filteredItems = $derived(
-    mockDishes.filter(
-      (item) =>
+    mockDishes.filter((item) => {
+      const categoryMatch =
         item.category.toLowerCase().includes(selectedCategory.toLowerCase()) ||
-        selectedCategory.toLowerCase().includes(item.category.toLowerCase()),
-    ),
+        selectedCategory.toLowerCase().includes(item.category.toLowerCase());
+      const searchMatch =
+        !searchQuery ||
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchQuery.toLowerCase());
+      return categoryMatch && searchMatch;
+    }),
   );
 </script>
 
@@ -63,11 +69,14 @@
 </svelte:head>
 
 <PageLayout heroHeight="50svh" {primaryColor}>
-  {#snippet nav()}
+  {#snippet nav(forceSolid)}
     <Header
       showLogo={false}
       showBack={true}
       showCart={true}
+      bind:searchQuery
+      {forceSolid}
+      showVegToggle={true}
       goBack={() => goto("/home")}
     />
   {/snippet}
@@ -101,6 +110,7 @@
     z-index: 50;
     background: #fff;
     border-bottom: 1px solid #f0f0f0;
+    view-transition-name: category-nav;
   }
 
   .grid-container {

@@ -59,16 +59,15 @@
     width: 100%;
     position: relative;
     z-index: 10;
-    padding: 1rem 0 0;
     box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
     border-bottom: 1px solid #f0f0f0;
+    padding-top: 0.7rem;
   }
 
   .tabs-scroll {
     display: flex;
     overflow-x: auto;
     scrollbar-width: none;
-    padding: 0 1rem;
     justify-content: space-between;
     gap: 0.25rem;
   }
@@ -106,7 +105,8 @@
   .icon-wrap .emoji {
     font-size: 20px;
     line-height: 1;
-    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+    font-family:
+      "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
   }
 
   .tab-item.active .icon-wrap {

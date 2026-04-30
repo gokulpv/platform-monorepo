@@ -41,99 +41,124 @@
   <div class="page-content">
     <Header
       showLogo={false}
-    showBack={true}
-    showCart={true}
-    showVegToggle={false}
-  />
+      showBack={true}
+      showCart={true}
+      showVegToggle={true}
+      forceSolid={true}
+    />
 
-  <main class="content">
-    {#if !isArVisible}
-      <div class="info-section" transition:slide={{ duration: 600, easing: cubicInOut }}>
-        <div class="category-eyebrow">
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
+    <main class="content">
+      {#if !isArVisible}
+        <div
+          class="info-section"
+          transition:slide={{ duration: 600, easing: cubicInOut }}
         >
-          <path
-            d="M11 6l-5 5m11-5l-5 5M9 22H5a2 2 0 01-2-2V7l2-2h14l2 2v13a2 2 0 01-2 2h-4"
-          />
-        </svg>
-        In {dish.category}
-      </div>
-
-      <div class="title-row">
-        <h1 class="dish-name">{dish.name}</h1>
-        <span class="price-tag">{dish.price}</span>
-      </div>
-
-      <p class="cuisine-info">{dish.cuisine}</p>
-    </div>
-    {/if}
-
-    <div class="visual-section">
-      <div class="dish-platform">
-        <img
-          src={resolveImagePath(dish.image)}
-          alt={dish.name}
-          class="main-img"
-          class:hidden={isArMounted}
-          style="view-transition-name:dish-img-{dish.id};view-transition-class:dish-transition"
-        />
-      </div>
-
-      <div class="actions-row">
-        <div></div> <!-- Spacer for perfect centering -->
-        
-        <button 
-          class="ar-btn" 
-          class:active={isArMounted}
-          style="view-transition-name:ar-button" 
-          onclick={isArMounted ? handleCloseAR : handleOpenAR} 
-          disabled={isArLoading}
-        >
-          {#if isArLoading}
-            <div class="loading-spinner"></div>
-            Loading...
-          {:else if isArMounted}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M18 6L6 18M6 6l12 12" />
-            </svg>
-            Exit AR Mode
-          {:else}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-              <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-              <line x1="12" y1="22.08" x2="12" y2="12" />
-            </svg>
-            View on your table
-          {/if}
-        </button>
-
-        <div class="right-action-wrapper">
-          <button class="add-btn" aria-label="Add to cart" style="view-transition-name:add-button-{dish.id}">
+          <div class="category-eyebrow">
             <svg
-              width="24"
-              height="24"
+              width="14"
+              height="14"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="3"
+              stroke-width="2"
             >
-              <path d="M12 5v14M5 12h14" />
+              <path
+                d="M11 6l-5 5m11-5l-5 5M9 22H5a2 2 0 01-2-2V7l2-2h14l2 2v13a2 2 0 01-2 2h-4"
+              />
             </svg>
+            In {dish.category}
+          </div>
+
+          <div class="title-row">
+            <h1 class="dish-name">{dish.name}</h1>
+            <span class="price-tag">{dish.price}</span>
+          </div>
+
+          <p class="cuisine-info">{dish.cuisine}</p>
+        </div>
+      {/if}
+
+      <div class="visual-section">
+        <div class="dish-platform">
+          <img
+            src={resolveImagePath(dish.image)}
+            alt={dish.name}
+            class="main-img"
+            class:hidden={isArMounted}
+            style="view-transition-name:dish-img-{dish.id};view-transition-class:dish-transition"
+          />
+        </div>
+
+        <div class="actions-row">
+          <div></div>
+          <!-- Spacer for perfect centering -->
+
+          <button
+            class="ar-btn"
+            class:active={isArMounted}
+            style="view-transition-name:ar-button"
+            onclick={isArMounted ? handleCloseAR : handleOpenAR}
+            disabled={isArLoading}
+          >
+            {#if isArLoading}
+              <div class="loading-spinner"></div>
+              Loading...
+            {:else if isArMounted}
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+              Exit AR Mode
+            {:else}
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+                />
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                <line x1="12" y1="22.08" x2="12" y2="12" />
+              </svg>
+              View on your table
+            {/if}
           </button>
+
+          <div class="right-action-wrapper">
+            <button
+              class="add-btn"
+              aria-label="Add to cart"
+              style="view-transition-name:add-button-{dish.id}"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+              >
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="recommendations-wrapper">
-      <DishRecommendations dishes={otherDishes} activeId={dish.id} />
-    </div>
-  </main>
+      <div class="recommendations-wrapper">
+        <DishRecommendations dishes={otherDishes} activeId={dish.id} />
+      </div>
+    </main>
   </div>
 
   {#if isArVisible}
@@ -143,12 +168,12 @@
   {/if}
 
   {#if isArMounted}
-    <ARViewer 
-      dishImage={dish.image} 
-      dishName={dish.name} 
+    <ARViewer
+      dishImage={dish.image}
+      dishName={dish.name}
       isVisible={isArVisible}
       onReady={handleArReady}
-      onClose={handleCloseAR} 
+      onClose={handleCloseAR}
     />
   {/if}
 </div>
@@ -185,6 +210,7 @@
     display: flex;
     flex-direction: column;
     min-height: 0;
+    padding: 16px 0;
   }
 
   .info-section {
@@ -338,14 +364,16 @@
   .loading-spinner {
     width: 14px;
     height: 14px;
-    border: 2px solid rgba(255,255,255,0.3);
+    border: 2px solid rgba(255, 255, 255, 0.3);
     border-top-color: white;
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .add-btn {
@@ -375,7 +403,11 @@
     left: 0;
     right: 0;
     height: 160px;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.65) 0%, transparent 100%);
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.65) 0%,
+      transparent 100%
+    );
     pointer-events: none;
     z-index: 5;
   }
@@ -386,7 +418,11 @@
     left: 0;
     right: 0;
     height: 350px;
-    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.85) 0%,
+      transparent 100%
+    );
     pointer-events: none;
     z-index: 5;
   }

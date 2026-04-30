@@ -1,16 +1,45 @@
 <script lang="ts">
+  import { onMount, tick, untrack } from "svelte";
+  import { page } from "$app/state";
+  import { get } from "svelte/store";
+  import { scrollPositions } from "$lib/stores/scrollStore";
+
   let { hero, nav, children, heroHeight = "45svh", primaryColor } = $props();
 
-  let scrollY = $state(0);
+  let scrollEl = $state<HTMLElement | null>(null);
+  let scrollY = $state(untrack(() => get(scrollPositions)[page.url.pathname] || 0));
   const HEADER_HEIGHT = 60;
 
   function handleScroll(e: Event) {
     const target = e.target as HTMLElement;
     scrollY = target.scrollTop;
+
+    // Save position for current route
+    const path = page.url.pathname;
+    scrollPositions.update((pos) => ({ ...pos, [path]: scrollY }));
   }
 
-  // Calculate threshold based on heroHeight (45vh) minus header height
-  // In a real app we might measure this, but using vh/px math is reliable for this design
+  // Restore position on mount and route changes
+  $effect(() => {
+    const path = page.url.pathname;
+    const saved = untrack(() => get(scrollPositions)[path] || 0);
+
+    if (scrollEl) {
+      if (saved > 0) {
+        // First pass: Immediate restoration
+        tick().then(() => {
+          if (scrollEl) scrollEl.scrollTop = saved;
+        });
+
+        // Second pass: Delayed restoration for slow-loading content
+        setTimeout(() => {
+          if (scrollEl) scrollEl.scrollTop = saved;
+        }, 100);
+      } else {
+        scrollEl.scrollTop = 0;
+      }
+    }
+  });
   const isHeaderSolid = $derived.by(() => {
     if (typeof window === "undefined") return false;
     const threshold = window.innerHeight * 0.45 - HEADER_HEIGHT;
@@ -33,12 +62,12 @@
   </div>
 
   <!-- Header stays fixed on top -->
-  <div class="persistent-nav-layer" class:solid={isHeaderSolid}>
-    {@render nav?.()}
+  <div class="persistent-nav-layer">
+    {@render nav?.(isHeaderSolid)}
   </div>
 
   <!-- The ONE scroll container -->
-  <div class="scroll-container" onscroll={handleScroll}>
+  <div class="scroll-container" bind:this={scrollEl} onscroll={handleScroll}>
     <!-- Transparent spacer that lets hero show through -->
     <div class="hero-spacer"></div>
 
@@ -81,15 +110,7 @@
     top: 0;
     width: 100%;
     z-index: 1000;
-    background: transparent;
-    transition: all 0.3s ease;
-  }
-
-  .persistent-nav-layer.solid {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px) saturate(180%);
-    -webkit-backdrop-filter: blur(12px) saturate(180%);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+    view-transition-name: main-header-wrapper;
   }
 
   .fixed-hero-layer {
@@ -108,7 +129,6 @@
     overflow-y: auto;
     overflow-x: hidden;
     z-index: 10;
-    scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
   }
 

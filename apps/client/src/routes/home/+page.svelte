@@ -35,34 +35,13 @@
 </svelte:head>
 
 <PageLayout {primaryColor}>
-  {#snippet nav()}
-    <Header logoUrl={data.brand?.logo_url} />
+  {#snippet nav(forceSolid)}
+    <Header logoUrl={data.brand?.logo_url} bind:searchQuery {forceSolid} showCart={true} />
   {/snippet}
 
   {#snippet hero()}
     <AppHero mode="carousel" items={spotlights} {primaryColor} />
   {/snippet}
-
-  <section class="search-section">
-    <div class="search-bar">
-      <svg
-        class="search-icon"
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2.5"
-      >
-        <circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
-      </svg>
-      <input
-        type="text"
-        placeholder="Search dishes or ingredients"
-        bind:value={searchQuery}
-      />
-    </div>
-  </section>
 
   <section class="categories-section">
     <div class="header">

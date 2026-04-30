@@ -6,12 +6,15 @@
         showBack = false,
         showVegToggle = true,
         showCart = false,
+        showSearch = true,
+        forceSolid = false,
+        searchQuery = $bindable(""),
         logoUrl = "/assets/logos/koi.png",
         goBack = () => window.history.back(),
     } = $props();
 </script>
 
-<section class="nav-container">
+<section class="nav-container" class:solid={forceSolid} style="view-transition-name: main-header">
     <div class="left-actions">
         {#if showLogo}
             <a href="/" class="logo">
@@ -41,6 +44,28 @@
             </button>
         {/if}
     </div>
+
+    {#if showSearch}
+        <div class="search-container">
+            <svg
+                class="search-icon"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+            >
+                <circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
+            </svg>
+            <input
+                type="text"
+                placeholder="Search..."
+                bind:value={searchQuery}
+                aria-label="Search dishes"
+            />
+        </div>
+    {/if}
 
     <div class="right-actions">
         {#if showVegToggle}
@@ -78,12 +103,60 @@
         align-items: center;
         justify-content: space-between;
         padding: 0 12px;
+        gap: 8px;
+        background: transparent;
+        transition: background 0.15s ease;
     }
 
-    .left-actions, .right-actions {
+    .nav-container.solid {
+        background: #ffffff;
+        border-bottom: 1px solid #eee;
+    }
+
+    .left-actions,
+    .right-actions {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 10px;
+        flex-shrink: 0;
+    }
+
+    .search-container {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 100px;
+        padding: 0 12px;
+        height: 36px;
+        gap: 8px;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+    }
+
+    .search-container:focus-within {
+        background: #fff;
+        border-color: #eee;
+    }
+
+    .search-icon {
+        color: #888;
+    }
+
+    .search-container input {
+        border: none;
+        background: none;
+        flex: 1;
+        width: 100%;
+        font-size: 0.9rem;
+        font-family: inherit;
+        outline: none;
+        color: #111;
+        font-weight: 500;
+    }
+
+    .search-container input::placeholder {
+        color: #aaa;
     }
 
     .logo {
@@ -94,7 +167,6 @@
         border-radius: 50%;
         border: 2px solid #fff;
         background: #fff;
-        /* Removed overflow: hidden so ::before can extend outside */
     }
 
     .logo img {
@@ -113,7 +185,6 @@
         border-radius: 50%;
         border: 1px solid #e0e0e0;
         background: #fff;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -125,25 +196,6 @@
             background 0.18s ease;
     }
 
-    /* Expand clickable area */
-    .logo::before,
-    .icon-btn::before {
-        content: "";
-        position: absolute;
-        top: -12px;
-        right: -12px;
-        bottom: -12px;
-        left: -12px;
-        border-radius: 50%;
-        z-index: 1;
-    }
-
-    .icon-btn svg {
-        pointer-events: none;
-        position: relative;
-        z-index: 2;
-    }
-
     .icon-btn:active {
         transform: scale(0.96);
         background: rgba(255, 255, 255, 0.7);
@@ -153,11 +205,6 @@
         background: linear-gradient(135deg, #ff416c, #ff4b2b);
         color: #fff;
         border: none;
-        box-shadow: 0 4px 12px rgba(255, 75, 43, 0.4);
-    }
-
-    .cart-btn:active {
-        background: linear-gradient(135deg, #e6395e, #e64225);
     }
 
     .veg-toggle {
@@ -168,6 +215,7 @@
         padding: 2px 8px 2px 2px;
         border-radius: 100px;
         cursor: pointer;
+        border: 1px solid #eee;
     }
 
     .toggle-dot {
@@ -193,5 +241,11 @@
         font-weight: 700;
         color: #00b140;
         letter-spacing: -0.01em;
+    }
+
+    @media (max-width: 360px) {
+        .veg-toggle {
+            display: none;
+        }
     }
 </style>

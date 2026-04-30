@@ -44,3 +44,19 @@ a:focus-visible,
 	outline: none;
 	box-shadow: none;
 }
+
+/* View Transition Stacking - Keep layout elements above moving content */
+::view-transition-group(main-header),
+::view-transition-group(main-header-wrapper),
+::view-transition-group(category-nav) {
+	z-index: 100;
+}
+
+/* Force layout headers to be perfectly static during transitions */
+::view-transition-old(main-header),
+::view-transition-new(main-header),
+::view-transition-old(main-header-wrapper),
+::view-transition-new(main-header-wrapper) {
+	animation: none !important;
+	mix-blend-mode: normal !important;
+}
