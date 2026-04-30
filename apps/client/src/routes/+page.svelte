@@ -109,17 +109,6 @@
     width: 100%;
     overflow: hidden;
     background-color: var(--bg);
-    background-image:
-      radial-gradient(
-        circle at 0% 0%,
-        rgba(255, 255, 255, 0.05) 0%,
-        transparent 50%
-      ),
-      radial-gradient(
-        circle at 100% 100%,
-        rgba(0, 0, 0, 0.3) 0%,
-        transparent 50%
-      );
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -155,7 +144,6 @@
     text-align: center;
     padding: 2rem;
     z-index: 2;
-    animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     backface-visibility: hidden;
   }
 
