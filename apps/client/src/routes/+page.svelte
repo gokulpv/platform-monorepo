@@ -33,12 +33,10 @@
   {#if logoUrl}
     <link rel="preload" href={logoUrl} as="image" fetchpriority="high" />
   {/if}
+  {@html `<style>:root { --bg: ${primaryColor}; --accent: ${secondaryColor}; --font: '${fontFamily}'; }</style>`}
 </svelte:head>
 
-<main
-  class="splash"
-  style="--bg: {primaryColor}; --accent: {secondaryColor}; --font: {fontFamily}"
->
+<main class="splash">
   <div class="glow-overlay"></div>
 
   <div class="content">
@@ -101,6 +99,7 @@
   :global(body) {
     margin: 0;
     padding: 0;
+    background-color: var(--bg);
   }
 
   .splash {

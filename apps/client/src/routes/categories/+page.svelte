@@ -64,7 +64,12 @@
 
 <PageLayout heroHeight="50svh" {primaryColor}>
   {#snippet nav()}
-    <Header showLogo={false} showBack={true} showCart={true} goBack={() => goto("/home")} />
+    <Header
+      showLogo={false}
+      showBack={true}
+      showCart={true}
+      goBack={() => goto("/home")}
+    />
   {/snippet}
 
   {#snippet hero()}
@@ -90,7 +95,12 @@
 
 <style>
   .sticky-nav {
-    margin: -16px;
+    margin: -20px -16px 0;
+    position: sticky;
+    top: 60px; /* Aligns below the main header */
+    z-index: 50;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
   }
 
   .grid-container {
