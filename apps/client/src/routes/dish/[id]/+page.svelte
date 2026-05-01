@@ -8,6 +8,23 @@
   let isImageFound = $state(false);
   let isArVisible = $state(false);
   let isArLoading = $state(false);
+  let hasBeenPlaced = $state(false);
+
+  $effect(() => {
+    const onFound = () => {
+      isImageFound = true;
+      hasBeenPlaced = true;
+    };
+    const onLost = () => (isImageFound = false);
+
+    window.addEventListener('ar-image-found', onFound);
+    window.addEventListener('ar-image-lost', onLost);
+
+    return () => {
+      window.removeEventListener('ar-image-found', onFound);
+      window.removeEventListener('ar-image-lost', onLost);
+    };
+  });
 
   function handleOpenAR() {
     isArLoading = true;
@@ -45,6 +62,7 @@
   {isArMounted}
   {isArVisible}
   {isImageFound}
+  {hasBeenPlaced}
   onArReady={handleArReady}
 >
   {#snippet children()}

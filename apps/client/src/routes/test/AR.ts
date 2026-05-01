@@ -30,16 +30,46 @@ export const initAR = async () => {
     }
 
     const imageTargetPipelineModule = () => {
-        let frame: any;
-        const updatePose = (detail: any, mesh: any) => {
+        let model: any;
+        let isImageVisible = false;
+        const targetPose = {
+            position: new (window as any).THREE.Vector3(),
+            quaternion: new (window as any).THREE.Quaternion(),
+            scale: new (window as any).THREE.Vector3(1, 1, 1)
+        };
+
+        let hasInitializedPose = false;
+        const updateTargetPose = (detail: any) => {
             const { position, rotation, scale } = detail;
-            mesh.position.set(position.x, position.y, position.z);
-            mesh.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
-            if (typeof scale === 'number') {
-                mesh.scale.set(scale, scale, scale);
-            } else {
-                mesh.scale.set(scale.x || 1, scale.y || 1, scale.z || 1);
+            const THREE = (window as any).THREE;
+
+            const newPos = new THREE.Vector3(position.x, position.y, position.z);
+            const newQuat = new THREE.Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
+            const baseScale = typeof scale === 'number' ? scale : (scale.x || 1);
+            const s = baseScale * 0.5;
+            const newScale = new THREE.Vector3(s, s, s);
+
+            if (!hasInitializedPose) {
+                targetPose.position.copy(newPos);
+                targetPose.quaternion.copy(newQuat);
+                targetPose.scale.copy(newScale);
+                hasInitializedPose = true;
+                return;
             }
+
+            // Advanced Method: Input Deadbanding
+            // If the change is microscopic (sensor noise), ignore it to prevent vibration
+            const posDiff = targetPose.position.distanceTo(newPos);
+            const rotDiff = targetPose.quaternion.angleTo(newQuat);
+
+            if (posDiff < 0.0005 && rotDiff < 0.0005) return;
+
+            // Advanced Method: Input Pre-Filtering (Exponential Moving Average)
+            // We smooth the raw tracking data slightly before it even reaches the renderer
+            const alpha = 0.2;
+            targetPose.position.lerp(newPos, alpha);
+            targetPose.quaternion.slerp(newQuat, alpha);
+            targetPose.scale.lerp(newScale, alpha);
         };
 
         return {
@@ -47,65 +77,100 @@ export const initAR = async () => {
             onStart: () => {
                 const { scene } = (window as any).XR8.Threejs.xrScene();
                 const THREE = (window as any).THREE;
-                const shape = new THREE.Shape();
-                const size = 0.35;
-                const thickness = 0.03;
-                shape.moveTo(-size, -size);
-                shape.lineTo(size, -size);
-                shape.lineTo(size, size);
-                shape.lineTo(-size, size);
-                shape.closePath();
-                const hole = new THREE.Path();
-                hole.moveTo(-size + thickness, -size + thickness);
-                hole.lineTo(size - thickness, -size + thickness);
-                hole.lineTo(size - thickness, size - thickness);
-                hole.lineTo(-size + thickness, size - thickness);
-                hole.closePath();
-                shape.holes.push(hole);
-                const geometry = new THREE.ShapeGeometry(shape);
-                const material = new THREE.MeshBasicMaterial({ color: 0x4fc3f7, side: THREE.DoubleSide });
-                frame = new THREE.Mesh(geometry, material);
-                frame.visible = false;
-                scene.add(frame);
+
+                // Add a light if not already present (to ensure visibility)
+                if (!scene.getObjectByName('ar-logic-light')) {
+                    const light = new THREE.DirectionalLight(0xffffff, 1);
+                    light.position.set(1, 10, 1);
+                    light.name = 'ar-logic-light';
+                    scene.add(light);
+                    scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+                }
+
+                // Create a solid cube instead of loading a GLB model
+                // Centered geometry (no translation) to ensure it sits in the middle
+                const geometry = new THREE.BoxGeometry(1, 1, 1);
+                const material = new THREE.MeshStandardMaterial({
+                    color: 0x39FF14, // Vibrant green
+                    emissive: 0x003300, // Subtle glow
+                    roughness: 0.3,
+                    metalness: 0.2
+                });
+                model = new THREE.Mesh(geometry, material);
+                model.visible = false;
+
+                // Rotate model -90 degrees on X to align with 8th Wall image target orientation (Z is out)
+                model.rotation.set(-Math.PI / 2, 0, 0);
+
+                scene.add(model);
+            },
+            onUpdate: () => {
+                if (isImageVisible && model) {
+                    const posDist = model.position.distanceTo(targetPose.position);
+                    const rotDist = model.quaternion.angleTo(targetPose.quaternion);
+
+                    // Advanced Method: Adaptive Smoothing Factor
+                    // We use an even tighter smoothing factor for small distances to kill "micro-vibrations"
+                    // but allow it to ramp up for deliberate movements to maintain responsiveness.
+                    let factor = 0.05;
+                    if (posDist < 0.005 && rotDist < 0.01) {
+                        factor = 0.02; // Ultra-smooth for tiny jitters
+                    } else if (posDist > 0.05 || rotDist > 0.1) {
+                        factor = 0.15; // Faster follow for large movements
+                    }
+
+                    model.position.lerp(targetPose.position, factor);
+                    model.quaternion.slerp(targetPose.quaternion, factor);
+                    model.scale.lerp(targetPose.scale, factor);
+                }
             },
             listeners: [
                 {
                     event: 'reality.imagefound',
                     process: (e: any) => {
-                        updatePose(e.detail, frame);
-                        frame.visible = true;
-                        
-                        // Dispatch event for UI
-                        window.dispatchEvent(new CustomEvent('ar-image-found'));
+                        updateTargetPose(e.detail);
+                        isImageVisible = true;
 
-                        // Scale up animation
-                        frame.scale.set(0.01, 0.01, 0.01);
-                        const start = Date.now();
-                        const duration = 600;
-                        
-                        const animate = () => {
-                            const elapsed = Date.now() - start;
-                            const progress = Math.min(elapsed / duration, 1);
-                            // Elastic out easing
-                            const ease = 1 - Math.pow(1 - progress, 3) * (1 - progress * Math.sin(progress * Math.PI * 2.5));
-                            const s = 0.01 + ease * 0.99;
-                            frame.scale.set(s, s, s);
-                            
-                            if (progress < 1) requestAnimationFrame(animate);
-                        };
-                        animate();
+                        if (model && !model.visible) {
+                            model.position.copy(targetPose.position);
+                            model.quaternion.copy(targetPose.quaternion);
+                            model.scale.copy(targetPose.scale);
+                            model.visible = true;
+
+                            (window as any).XR8.XrController.recenter();
+
+                            window.dispatchEvent(new CustomEvent('ar-image-found'));
+                            window.dispatchEvent(new CustomEvent('ar-handoff-complete'));
+
+                            // Scale up animation
+                            model.scale.set(0.01, 0.01, 0.01);
+                            const start = Date.now();
+                            const duration = 600;
+                            const animate = () => {
+                                const elapsed = Date.now() - start;
+                                const progress = Math.min(elapsed / duration, 1);
+                                const ease = 1 - Math.pow(1 - progress, 3) * (1 - progress * Math.sin(progress * Math.PI * 2.5));
+                                const s = 0.01 + ease * 0.99;
+                                if (model) {
+                                    model.scale.set(targetPose.scale.x * s, targetPose.scale.y * s, targetPose.scale.z * s);
+                                }
+                                if (progress < 1) requestAnimationFrame(animate);
+                            };
+                            animate();
+                        }
                     }
                 },
                 {
                     event: 'reality.imageupdated',
                     process: (e: any) => {
-                        updatePose(e.detail, frame);
+                        updateTargetPose(e.detail);
+                        isImageVisible = true;
                     }
                 },
                 {
                     event: 'reality.imagelost',
                     process: () => {
-                        frame.visible = false;
+                        isImageVisible = false;
                         window.dispatchEvent(new CustomEvent('ar-image-lost'));
                     }
                 }
@@ -116,32 +181,44 @@ export const initAR = async () => {
     const slamPipelineModule = () => {
         let surface: any;
         let THREE: any;
+        let gridHelper: any;
+        let isActive = false;
         const raycaster = new (window as any).THREE.Raycaster();
         const tapPosition = new (window as any).THREE.Vector2();
+
         return {
             name: 'slam-logic',
             onStart: ({ canvas }: { canvas: HTMLCanvasElement }) => {
-                const { scene, camera, renderer } = (window as any).XR8.Threejs.xrScene();
+                const XR8 = (window as any).XR8;
+                const threejs = XR8.Threejs.xrScene();
+                if (!threejs) return;
+
+                const { scene, camera, renderer } = threejs;
                 THREE = (window as any).THREE;
                 renderer.shadowMap.enabled = true;
-                const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-                scene.add(ambientLight);
+
+                scene.add(new THREE.AmbientLight(0xffffff, 0.7));
                 const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
                 dirLight.position.set(5, 10, 5);
                 dirLight.castShadow = true;
                 scene.add(dirLight);
-                const surfaceGeometry = new THREE.PlaneGeometry(100, 100);
-                const surfaceMaterial = new THREE.ShadowMaterial({ opacity: 0.4 });
-                surface = new THREE.Mesh(surfaceGeometry, surfaceMaterial);
+
+                surface = new THREE.Mesh(new THREE.PlaneGeometry(100, 100), new THREE.ShadowMaterial({ opacity: 0.4 }));
                 surface.rotateX(-Math.PI / 2);
                 surface.receiveShadow = true;
                 scene.add(surface);
-                const gridHelper = new THREE.GridHelper(20, 20, 0x4fc3f7, 0x444444);
-                scene.add(gridHelper);
+
                 camera.position.set(0, 3, 0);
-                (window as any).XR8.XrController.updateCameraProjectionMatrix({ origin: camera.position, facing: camera.quaternion });
+                XR8.XrController.updateCameraProjectionMatrix({ origin: camera.position, facing: camera.quaternion });
+
+                window.addEventListener('ar-handoff-complete', () => {
+                    isActive = true;
+                });
+
                 const onTouch = (e: TouchEvent) => {
-                    if (e.touches.length === 2) { (window as any).XR8.XrController.recenter(); return; }
+                    if (!isActive) return;
+
+                    if (e.touches.length === 2) { XR8.XrController.recenter(); return; }
                     if (e.touches.length > 1) return;
                     tapPosition.x = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
                     tapPosition.y = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
@@ -149,9 +226,7 @@ export const initAR = async () => {
                     const intersects = raycaster.intersectObject(surface);
                     if (intersects.length > 0) {
                         const { x, z } = intersects[0].point;
-                        const geometry = new THREE.BoxGeometry(0.3, 0.3, 0.3);
-                        const material = new THREE.MeshStandardMaterial({ color: 0x4fc3f7, roughness: 0.5, metalness: 0.2 });
-                        const cube = new THREE.Mesh(geometry, material);
+                        const cube = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.3), new THREE.MeshStandardMaterial({ color: 0x39FF14, roughness: 0.5, metalness: 0.2 }));
                         cube.position.set(x, 0.15, z);
                         cube.castShadow = true;
                         scene.add(cube);
@@ -170,7 +245,13 @@ export const initAR = async () => {
         XR8.XrController.configure({
             imageTargetData: targetData ? [targetData] : [],
             imageTargets: targetData ? [(targetData as any).name] : [],
-            disableWorldTracking: arMode === 'image',
+            // Thermal Optimization
+            disableWorldTracking: false,
+            scaleResolution: 0.75,
+            maxResolution: 640,
+            // Advanced Method: Engine-level smoothing
+            enableSmoothing: true,
+            smoothingPoints: 5,
         });
 
         const modules = [
@@ -182,23 +263,26 @@ export const initAR = async () => {
             XRExtras.RuntimeError.pipelineModule(),
         ];
 
-        if (arMode === 'slam') {
-            modules.push(slamPipelineModule());
-        } else if (arMode === 'image') {
-            modules.push(imageTargetPipelineModule());
-        } else {
-            modules.push(imageTargetPipelineModule());
-            modules.push(slamPipelineModule());
-        }
+        const readinessModule = () => ({
+            name: 'readiness-logic',
+            onStart: () => {
+                // Faster readiness: Signal as soon as the pipeline starts
+                window.dispatchEvent(new CustomEvent('ar-loading-complete'));
+            }
+        });
 
-        XR8.addCameraPipelineModules(modules);
+        modules.push(readinessModule());
+        modules.push(imageTargetPipelineModule());
+        modules.push(slamPipelineModule());
+
         const canvas = document.getElementById('camerafeed') as HTMLCanvasElement;
         if (!canvas) return;
 
-        // Signal UI that camera has started
-        window.dispatchEvent(new CustomEvent('ar-loading-complete'));
-
-        XR8.run({ canvas });
+        XR8.addCameraPipelineModules(modules);
+        XR8.run({
+            canvas,
+            fps: 30, // Reduced frame rate as requested
+        });
     };
 
     return new Promise<void>((resolve) => {
@@ -207,14 +291,15 @@ export const initAR = async () => {
             resolve();
         };
         window.addEventListener('ar-loading-complete', checkReady);
-        
+
         // Safety timeout
         setTimeout(resolve, 5000);
 
-        if (XR8) {
+        const win = window as any;
+        if (win.XR8) {
             onxrloaded();
         } else {
-            window.addEventListener('xrjsloaded', onxrloaded, { once: true });
+            win.addEventListener('xrjsloaded', onxrloaded, { once: true });
         }
     });
 };

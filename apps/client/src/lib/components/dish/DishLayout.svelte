@@ -25,6 +25,7 @@
         isArMounted = false, 
         isArVisible = false,
         isImageFound = false,
+        hasBeenPlaced = false,
         onArReady,
     }: Props = $props();
 </script>
@@ -34,7 +35,7 @@
     <canvas id="camerafeed" class:visible={isArVisible}></canvas>
 
     <!-- Stunning Scanning Overlay -->
-    {#if isArVisible && !isImageFound}
+    {#if isArVisible && !isImageFound && !hasBeenPlaced}
         <div class="scanning-overlay" transition:fade={{ duration: 300 }}>
             <div class="scan-line"></div>
             <div class="scan-vignette"></div>

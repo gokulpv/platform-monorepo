@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/qr_luminance.png",
+  "metadata": null,
+  "name": "qr",
+  "type": "PLANAR",
+  "properties": {
+    "left": 88,
+    "top": 0,
+    "width": 527,
+    "height": 702,
+    "isRotated": true,
+    "originalWidth": 702,
+    "originalHeight": 702
+  },
+  "resources": {
+    "originalImage": "qr_original.png",
+    "croppedImage": "qr_cropped.png",
+    "thumbnailImage": "qr_thumbnail.png",
+    "luminanceImage": "qr_luminance.png"
+  },
+  "created": 1777666743193,
+  "updated": 1777666743193
+}
