@@ -71,7 +71,7 @@
     </div>
 
     <div class="cta-wrapper">
-      <a href="/home" class="cta" data-sveltekit-preload-data="eager">
+      <a href="/home" class="cta" data-sveltekit-preload-data="hover">
         <span>Explore Menu</span>
         <div class="arrow">
           <svg
