@@ -11,6 +11,7 @@ env:
   TENANT_FALLBACK: ${{ vars.TENANT_FALLBACK || 't_koi' }}
   WORKER_BASE_PATH: ${{ vars.WORKER_BASE_PATH || 'https://worker.gokulsreenilayam.workers.dev' }}
   VITE_WEBAR_API_KEY: "651f82b9cbf679b362f02ff5375f07cfdb9651c8c004a6ade3cf0bbf7a2a2226"
+  VITE_AR_MODE: "image"
 
 jobs:
   deploy-worker:
@@ -53,8 +54,9 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           set -euo pipefail
-          ASSETS_ROOT="apps/client/static/assets"
+          ASSETS_ROOT="apps/client/static"
           BUCKET="platform-assets"
+          # We now upload the entire static folder to ensure assets and image-targets are synced
           mime_for() {
             case "${1##*.}" in
               webp) echo "image/webp" ;;
@@ -63,15 +65,18 @@ jobs:
               gif) echo "image/gif" ;;
               svg) echo "image/svg+xml" ;;
               ico) echo "image/x-icon" ;;
+              json) echo "application/json" ;;
               woff2) echo "font/woff2" ;;
               woff) echo "font/woff" ;;
               *) echo "application/octet-stream" ;;
             esac
           }
           while IFS= read -r -d '' f; do
+            # Skip hidden files
+            [[ $(basename "$f") == .* ]] && continue
             key="${f#"$ASSETS_ROOT"/}"
             wrangler r2 object put "${BUCKET}/${key}" --file="$f" --remote --content-type "$(mime_for "$f")"
-          done < <(find "$ASSETS_ROOT" -type f -print0)
+          done < <(find "$ASSETS_ROOT" -maxdepth 3 -type f -print0)
 
       # ✅ Deploy worker
       - name: deploy Worker
