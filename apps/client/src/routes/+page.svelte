@@ -36,17 +36,26 @@
   {@html `<style>:root { --bg: ${primaryColor}; --accent: ${secondaryColor}; --font: '${fontFamily}'; }</style>`}
 </svelte:head>
 
-<main class="splash">
-  <div class="glow-overlay"></div>
+<main
+  class="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden text-white"
+  style="background-color: var(--bg); font-family: var(--font), -apple-system, system-ui, sans-serif;"
+>
+  <!-- Glow Overlay -->
+  <div
+    class="pointer-events-none absolute inset-0"
+    style="background: radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.1) 0%, transparent 70%);"
+  ></div>
 
-  <div class="content">
-    <div class="logo-wrapper">
-      <div class="logo-container">
+  <div class="z-10 flex flex-col items-center gap-12 p-8 text-center">
+    <div class="relative flex items-center justify-center">
+      <div
+        class="relative z-10 flex h-[180px] w-[180px] items-center justify-center max-[480px]:h-[150px] max-[480px]:w-[150px]"
+      >
         {#if logoUrl}
           <img
             src={logoUrl}
             alt="{tenantName} Logo"
-            class="logo"
+            class="max-h-full max-w-full object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)]"
             fetchpriority="high"
             loading="eager"
             decoding="async"
@@ -54,26 +63,42 @@
             height="180"
           />
         {:else}
-          <div class="logo-placeholder">
+          <div
+            class="text-8xl font-bold tracking-tighter text-white opacity-90 drop-shadow-[0_10px_20px_rgba(0,0,0,0.3)]"
+          >
             {tenantName.substring(0, 1).toUpperCase()}
           </div>
         {/if}
       </div>
-      <div class="logo-glow"></div>
+      <div
+        class="absolute z-0 h-[140px] w-[140px] rounded-full bg-white opacity-15 blur-[60px]"
+      ></div>
     </div>
 
-    <div class="text-group">
-      <h1 class="title">{tenantName}</h1>
-      <div class="location-badge">
-        <span class="dot"></span>
-        <p class="location">{location}</p>
+    <div class="animate-fadeInUp flex flex-col gap-3">
+      <h1
+        class="bg-gradient-to-b from-white to-white/70 bg-clip-text text-5xl font-bold leading-none tracking-tight text-transparent max-[480px]:text-4xl"
+      >
+        {tenantName}
+      </h1>
+      <div
+        class="flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-1.5 backdrop-blur-md"
+      >
+        <span class="h-1.5 w-1.5 rounded-full bg-green-400 shadow-[0_0_10px_#4ade80]"></span>
+        <p class="m-0 text-sm font-normal text-white/80">{location}</p>
       </div>
     </div>
 
-    <div class="cta-wrapper">
-      <a href="/home" class="cta" data-sveltekit-preload-data="hover">
+    <div class="animate-fadeInUp delay-200">
+      <a
+        href="/home"
+        class="group flex items-center gap-4 rounded-full bg-white px-9 py-4.5 text-lg font-semibold text-black no-underline shadow-[0_20px_40px_-10px_rgba(0,0,0,0.4)] transition-all duration-300 active:scale-95 active:bg-white/90"
+        data-sveltekit-preload-data="hover"
+      >
         <span>Explore Menu</span>
-        <div class="arrow">
+        <div
+          class="flex h-5 w-5 shrink-0 items-center justify-center transition-transform duration-300 group-hover:translate-x-1"
+        >
           <svg
             viewBox="0 0 24 24"
             fill="none"
@@ -90,8 +115,8 @@
     </div>
   </div>
 
-  <footer class="footer">
-    <p>Powered by <span>Tap QR</span></p>
+  <footer class="animate-fadeIn absolute bottom-10 text-[0.85rem] text-white/40">
+    <p>Powered by <span class="font-medium text-white/80">Tap QR</span></p>
   </footer>
 </main>
 
@@ -102,207 +127,16 @@
     background-color: var(--bg);
   }
 
-  .splash {
-    height: 100vh;
-    height: 100dvh;
-    width: 100%;
-    overflow: hidden;
-    background-color: var(--bg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-family:
-      var(--font),
-      -apple-system,
-      system-ui,
-      sans-serif;
-    position: relative;
+  .animate-fadeInUp {
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
-  .glow-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(
-      circle at 50% 40%,
-      rgba(255, 255, 255, 0.1) 0%,
-      transparent 70%
-    );
-    pointer-events: none;
+  .animate-fadeIn {
+    animation: fadeIn 1s ease both;
   }
 
-  .content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3rem;
-    text-align: center;
-    padding: 2rem;
-    z-index: 2;
-    backface-visibility: hidden;
-  }
-
-  .logo-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .logo-container {
-    width: 180px;
-    height: 180px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    z-index: 2;
-  }
-
-  .logo {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.5));
-    will-change: transform;
-  }
-
-  .logo-glow {
-    position: absolute;
-    width: 140px;
-    height: 140px;
-    background: white;
-    filter: blur(60px);
-    opacity: 0.15;
-    border-radius: 50%;
-    z-index: 1;
-  }
-
-  .logo-placeholder {
-    font-size: 5rem;
-    font-weight: 700;
-    color: white;
-    opacity: 0.9;
-    letter-spacing: -2px;
-    text-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-  }
-
-  .text-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
-    backface-visibility: hidden;
-  }
-
-  .title {
-    font-size: 3rem;
-    font-weight: 700;
-    margin: 0;
-    letter-spacing: -1px;
-    line-height: 1;
-    background: linear-gradient(to bottom, #ffffff, rgba(255, 255, 255, 0.7));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .location-badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    padding: 0.4rem 1rem;
-    border-radius: 100px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .dot {
-    width: 6px;
-    height: 6px;
-    background: #4ade80;
-    border-radius: 50%;
-    box-shadow: 0 0 10px #4ade80;
-  }
-
-  .location {
-    font-size: 0.9rem;
-    font-weight: 400;
-    margin: 0;
-    color: rgba(255, 255, 255, 0.8);
-  }
-
-  .cta-wrapper {
-    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
-    backface-visibility: hidden;
-  }
-
-  .cta {
-    background: white;
-    color: black;
-    text-decoration: none;
-    padding: 1.1rem 2.2rem;
-    border-radius: 100px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    transition: all 0.3s cubic-bezier(0.33, 1, 0.68, 1);
-    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.4);
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .cta:active {
-    transform: scale(0.95);
-    background: rgba(255, 255, 255, 0.9);
-  }
-
-  .arrow {
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.3s ease;
-    flex-shrink: 0;
-  }
-
-  .arrow svg {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
-
-  .cta:hover .arrow {
-    transform: translateX(4px);
-  }
-
-  .footer {
-    position: absolute;
-    bottom: 2.5rem;
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.4);
-    animation: fadeIn 1s ease 0.8s both;
-  }
-
-  .footer span {
-    color: rgba(255, 255, 255, 0.8);
-    font-weight: 500;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
+  .delay-200 {
+    animation-delay: 0.2s;
   }
 
   @keyframes fadeInUp {
@@ -322,16 +156,6 @@
     }
     to {
       opacity: 1;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .title {
-      font-size: 2.5rem;
-    }
-    .logo-container {
-      width: 150px;
-      height: 150px;
     }
   }
 </style>
